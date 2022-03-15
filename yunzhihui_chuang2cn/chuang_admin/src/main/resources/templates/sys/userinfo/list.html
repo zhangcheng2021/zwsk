@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+    <title>系统用户管理</title>
+</head>
+
+<body>
+    <div th:replace="common/child_nav :: child_nav">
+    </div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5" id="from_serach">
+                        <div class="layui-input-inline layui-show-xs-block">
+                        </div>
+
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input type="text" name="loginName" id="loginName" th:value="${loginName}" placeholder="请输入要查询的登录名" autocomplete="off" class="layui-input"></div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input th:value="${pageInfo.number}" name="pageNumber" id="pageNumber" value="0" type="hidden"/>
+
+                            <button class="layui-btn" lay-submit="" lay-filter="sreach">
+                                <i class="layui-icon">&#xe615;</i>查询</button>
+                        </div>
+                    </form>
+                </div>
+
+
+                <div class="layui-card-header">
+<!--                    <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>-->
+                    <button class="layui-btn" onclick="xadmin.open('添加用户','./addInput',800,600)"><i class="layui-icon"></i>添加</button>
+                </div>
+                <div class="layui-card-body layui-table-body layui-table-main">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr>
+<!--                            <th>-->
+<!--                                <input type="checkbox" lay-filter="checkall" name="" lay-skin="primary">-->
+<!--                            </th>-->
+                            <th>用户ID</th>
+                            <th>登录名</th>
+                            <th>姓名</th>
+                            <th>手机号码</th>
+                            <th>角色</th>
+                            <th>登录次数</th>
+                            <th>创建时间</th>
+                            <th>状态</th>
+                            <th width="10%">操作</th></tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="user,stat:${pageInfo.content}">
+<!--                            <td>-->
+<!--                                <input type="checkbox" name="id" value="1"   lay-skin="primary">-->
+<!--                            </td>-->
+                            <td th:text="${user.id}">0</td>
+                            <td th:text="${user.loginName}"></td>
+                            <td th:text="${user.userName}"></td>
+                            <td th:text="${user.phone}"></td>
+                            <td th:text="${roleMap[user.role]}"></td>
+                            <td th:text="${user.loginCount}"></td>
+
+                            <td th:text="${#dates.format(user.createTime,'yyyy-MM-dd')}"></td>
+                            <td class="td-status" th:if="${user.status} eq 0">
+                                <span class="layui-btn layui-btn-normal layui-btn-mini">正常</span>
+                            </td>
+                            <td class="td-status" th:if="${user.status} eq -1">
+                                <span class="layui-btn layui-btn-disabled layui-btn-mini  ">删除</span>
+                            </td>
+                            <td class="td-status" th:if="${user.status} eq 1">
+                                <span class="layui-btn layui-btn-danger layui-btn-mini ">锁定</span>
+                            </td>
+                            <td class="td-manage">
+<!--                                <a onclick="member_stop(this,'10001')" href="javascript:;"  title="启用">-->
+<!--                                    <i class="layui-icon">&#xe601;</i>-->
+<!--                                </a>-->
+                                <a title="编辑"  th:if="${user.status eq 0}" th:onclick="editInput([[${user.id}]])" href="javascript:;">
+                                    <i class="layui-icon">&#xe642;</i>编辑
+                                </a>
+                                <a th:if="${user.status eq 0}" th:onclick="editPasswd([[${user.id}]])" title="修改密码" href="javascript:;">
+                                    <i class="layui-icon">&#xe631;</i>修改密码
+                                </a>
+                                <a title="删除" th:if="${user.status eq 0}" th:onclick="menu_del(this,[[${user.id}]],-1)" href="javascript:void(0);">
+                                    <i class="layui-icon">&#xe640;</i>删除
+                                </a>
+                                <a title="恢复" th:if="${user.status eq -1}" th:onclick="menu_del(this,[[${user.id}]],0)" href="javascript:void(0);">
+                                    <i class="layui-icon">&#xe669;</i>恢复</a>
+
+                                <a title="删除" th:if="${user.status eq 0}" th:onclick="menu_del(this,[[${user.id}]],1)" href="javascript:void(0);">
+                                    <i class="layui-icon">&#xe673;</i>锁定
+                                </a>
+                                <a title="业务分组"  th:if="${user.channel} ne ALL" th:onclick="authorize([[${user.id}]])" href="javascript:void(0);">
+                                    <i class="layui-icon">&#xe641;</i>业务分组
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-body ">
+                    <div class="page">
+                        <div th:replace="common/pageinfo :: pageinfo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['laydate','form'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+        var $ = layui.jquery;
+        // 监听全选
+        form.on('checkbox(checkall)', function(data){
+
+            if(data.elem.checked){
+                $('tbody input').prop('checked',true);
+            }else{
+                $('tbody input').prop('checked',false);
+            }
+            form.render('checkbox');
+        });
+
+        form.on('submit(sreach)', function (data) {
+            console.log("sreach.....");
+
+            //form.submit();
+            $("#pageNumber").val(1);
+            $("#from_serach").submit();
+            return false;
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#start' //指定元素
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#end' //指定元素
+        });
+
+
+
+    });
+
+    function onpage(pageNumber) {
+        $("#pageNumber").val(pageNumber);
+        console.log("pageNumber:"+pageNumber)
+
+        $("#from_serach").submit();
+
+
+    };
+
+
+
+
+    function editInput(id) {
+        xadmin.open('编辑菜单','./editInput?id='+id,800,600);
+    }
+
+    function authorize(id) {
+        xadmin.open('业务分组','./authorize?id='+id,800,600);
+    }
+
+    function editPasswd(id) {
+        xadmin.open('修改密码','./editPasswdInput?id='+id,500,300);
+    }
+
+    // $("#from_serach").onclick(function(){
+    //     $("#from_serach").submit();
+    //
+    // });
+    /*用户-停用*/
+    function member_stop(obj,id){
+        layer.confirm('确认要停用吗？',function(index){
+
+            if($(obj).attr('title')=='启用'){
+
+                //发异步把用户状态进行更改
+                $(obj).attr('title','停用')
+                $(obj).find('i').html('&#xe62f;');
+
+                $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('已停用');
+                layer.msg('已停用!',{icon: 5,time:1000});
+
+            }else{
+                $(obj).attr('title','启用')
+                $(obj).find('i').html('&#xe601;');
+
+                $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('已启用');
+                layer.msg('已启用!',{icon: 5,time:1000});
+            }
+
+        });
+    }
+
+    /*用户-删除*/
+    function menu_del(obj,id,status){
+        //$msg=status == 0?"恢复":"删除";
+        if(status ==0){
+            $msg="恢复";
+        }else if (status == -1) {
+            $msg = "删除";
+        }else if (status == 1) {
+            $msg = "锁定";
+        }
+
+        layer.confirm('确认要'+$msg+'吗？',function(index){
+            //发异步删除数据
+            //$(obj).parents("tr").remove();
+            //layer.msg('已删除!',{icon:1,time:1000});
+
+
+            $.ajax({
+                type: "POST",
+                url: "./delete",
+                data:{id:id,status:status},
+                dataType:'json',
+                success:function (data) {
+                    console.log("data->code:"+data.code);
+                    if (data.code == 0) {
+
+                            layui.layer.alert($msg+"成功", {
+                                    icon: 6
+                                },
+                                function () {
+                                    // 进行刷新
+                                    location.reload();
+                                });
+
+                        // return true;
+
+                    } else {
+                        layer.alert($msg+"失败", {
+                                icon: 2
+                            },
+                            function () {
+                                //关闭当前frame
+                                // xadmin.close();
+
+                                // 可以对父窗口进行刷新
+                                // location.reload();
+                            });
+                        //
+                    }
+                },
+                error:function (data) {
+                    alert("提交失败"+JSON.stringify(data));
+                }
+            });
+
+            return false;
+        });
+    }
+
+
+
+    /*用户-删除*/
+    function onisBatchRate(obj,id,status){
+        //$msg=status == 0?"恢复":"删除";
+        if(status ==0){
+            $msg="开启";
+        }else if (status == 1) {
+            $msg = "关闭";
+        }
+        layer.confirm('确认要'+$msg+'全局扣量吗？',function(index){
+            $.ajax({
+                type: "POST",
+                url: "./updateBatchRate",
+                data:{id:id,status:status},
+                dataType:'json',
+                success:function (data) {
+                    console.log("data->code:"+data.code);
+                    if (data.code == 0) {
+
+                        layui.layer.alert($msg+"全局扣量成功", {
+                                icon: 6
+                            },
+                            function () {
+                                // 进行刷新
+                                location.reload();
+                            });
+
+                        // return true;
+
+                    } else {
+                        layer.alert($msg+"全局扣量失败", {
+                                icon: 2
+                            },
+                            function () {
+                            });
+                        //
+                    }
+                },
+                error:function (data) {
+                    alert("提交失败"+JSON.stringify(data));
+                }
+            });
+
+            return false;
+        });
+    }
+
+
+
+    function delAll (argument) {
+        var ids = [];
+
+        // 获取选中的id
+        $('tbody input').each(function(index, el) {
+            if($(this).prop('checked')){
+                ids.push($(this).val())
+            }
+        });
+
+        layer.confirm('确认要删除吗？'+ids.toString(),function(index){
+            //捉到所有被选中的，发异步进行删除
+            layer.msg('删除成功', {icon: 1});
+            $(".layui-form-checked").not('.header').parents('tr').remove();
+        });
+    }
+</script>
+</html>

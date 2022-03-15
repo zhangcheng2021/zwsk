@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+    <head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+        <title>评审结果统计下载</title>
+    </head>
+
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row">
+                <form class="layui-form">
+                    <div class="layui-input-inline" style="margin-bottom: 10px;">
+                        <button class="layui-btn" id="teamA" >团队项目各专业组别建议入选人员分布表下载</button>
+                    </div>
+                    <div class="layui-input-inline" style="margin-bottom: 10px;">
+                        <button class="layui-btn" id="teamB" >个人项目各专业组别建议入选人员分布表下载</button>
+                    </div>
+                    <div class="layui-input-inline" style="margin-bottom: 10px;">
+                        <button class="layui-btn" id="teamC" >团队项目各专业组别建议入选人员属地情况分布表下载</button>
+                    </div>
+                    <div class="layui-input-inline" style="margin-bottom: 10px;">
+                        <button class="layui-btn" id="teamD" >个人项目各专业组别建议入选人员属地情况分布表下载</button>
+                    </div>
+                    <a href="" target="_blank" id="down-export"></a>
+                </form>
+            </div>
+
+        </div>
+        <script>
+        layui.use(['form', 'layer', 'jquery'],function () {
+                $ = layui.jquery;
+                var form = layui.form,layer = layui.layer;
+                $("#teamA").on('click',function(){
+                    $('#down-export').attr('href','/review/batch/down/[[${batchId}]]/1').get(0).click();
+                });
+                $("#teamB").on('click',function(){
+                    $('#down-export').attr('href','/review/batch/down/[[${batchId}]]/0').get(0).click();
+                });
+                 $("#teamC").on('click',function(){
+                    $('#down-export').attr('href','/review/batch/downRem/[[${batchId}]]/1').get(0).click();
+                });
+                 $("#teamD").on('click',function(){
+                    $('#down-export').attr('href','/review/batch/downRem/[[${batchId}]]/0').get(0).click();
+                });
+        });
+    </script>
+
+    </body>
+
+</html>

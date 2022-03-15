@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+</head>
+<body class="index">
+<!-- 顶部开始 -->
+<div class="container">
+    <div class="logo">
+        <a href="#">[[${_SYS_NAME}]]</a></div>
+    <div class="left_open">
+        <a><i title="展开左侧栏" class="iconfont">&#xe699;</i></a>
+    </div>
+<!--    <ul class="layui-nav left fast-add" lay-filter="">-->
+<!--        <li class="layui-nav-item">-->
+<!--            <a href="javascript:;">+新增</a>-->
+<!--            <dl class="layui-nav-child">-->
+<!--                &lt;!&ndash; 二级菜单 &ndash;&gt;-->
+<!--                <dd>-->
+<!--                    <a onclick="xadmin.open('最大化','http://www.baidu.com','','',true)">-->
+<!--                        <i class="iconfont">&#xe6a2;</i>弹出最大化</a></dd>-->
+<!--                <dd>-->
+<!--                    <a onclick="xadmin.open('弹出自动宽高','http://www.baidu.com')">-->
+<!--                        <i class="iconfont">&#xe6a8;</i>弹出自动宽高</a></dd>-->
+<!--                <dd>-->
+<!--                    <a onclick="xadmin.open('弹出指定宽高','http://www.baidu.com',500,300)">-->
+<!--                        <i class="iconfont">&#xe6a8;</i>弹出指定宽高</a></dd>-->
+<!--                <dd>-->
+<!--                    <a onclick="xadmin.add_tab('在tab打开','member-list.html')">-->
+<!--                        <i class="iconfont">&#xe6b8;</i>在tab打开</a></dd>-->
+<!--                <dd>-->
+<!--                    <a onclick="xadmin.add_tab('在tab打开刷新','member-del.html',true)">-->
+<!--                        <i class="iconfont">&#xe6b8;</i>在tab打开刷新</a></dd>-->
+<!--            </dl>-->
+<!--        </li>-->
+<!--    </ul>-->
+    <ul class="layui-nav right" lay-filter="">
+        <li class="layui-nav-item">
+            <a href="javascript:;">[[${session.SYS_USER_INFO_SESSION.userName}]]</a>
+            <dl class="layui-nav-child">
+                <!-- 二级菜单 -->
+                <dd>
+                    <a th:onclick="edit_passwd([[${session.SYS_USER_INFO_SESSION.id}]])">修改密码</a></dd>
+                <dd>
+                    <a th:href="@{/login/logout}">退出</a></dd>
+            </dl>
+        </li>
+<!--        <li class="layui-nav-item to-index">-->
+<!--            <a th:href="@{}">前台首页</a></li>-->
+    </ul>
+</div>
+<!-- 顶部结束 -->
+<!-- 中部开始 -->
+<!-- 左侧菜单开始 -->
+<div class="left-nav">
+    <div id="side-nav">
+        <ul id="nav">
+            <li th:each="menuVo:${session.SYS_ROLE_MENU_SESSION}">
+                <a href="javascript:;">
+                    <i class="iconfont left-nav-li" lay-tips="[[${menuVo.name}]]">&#xe6b4;</i>
+                    <cite>[[${menuVo.name}]]</cite>
+                    <i class="iconfont nav_right">&#xe697;</i></a>
+                <ul class="sub-menu">
+                    <li th:if="${not #lists.isEmpty(menuVo.childList)}" th:each="vo:${menuVo.childList}">
+                        <a th:onclick="xadmin.add_tab([[${vo.name}]],[[@{${vo.url}}]])" >
+                            <i class="iconfont">&#xe6a7;</i>
+                            <cite>[[${vo.name}]]</cite></a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+<!-- <div class="x-slide_left"></div> -->
+<!-- 左侧菜单结束 -->
+<!-- 右侧主体开始 -->
+<div class="page-content">
+    <div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
+        <ul class="layui-tab-title">
+            <li class="home">
+                <i class="layui-icon">&#xe68e;</i>主页</li></ul>
+        <div class="layui-unselect layui-form-select layui-form-selected" id="tab_right">
+            <dl>
+                <dd data-type="this">关闭当前</dd>
+                <dd data-type="other">关闭其它</dd>
+                <dd data-type="all">关闭全部</dd></dl>
+        </div>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <iframe th:src="@{/home/welcome}" frameborder="0" scrolling="yes" class="x-iframe"></iframe>
+            </div>
+        </div>
+        <div id="tab_show"></div>
+    </div>
+</div>
+<div class="page-content-bg"></div>
+<style id="theme_style"></style>
+<!-- 右侧主体结束 -->
+</body>
+<script th:inline="javascript">
+    var is_remember = true;
+
+    function edit_passwd($uid) {
+        //xadmin.add_tab($name,$url)
+        $url = [[@{/sys/userinfo/editPasswdInput?id=}]]+$uid;
+        xadmin.open('修改密码',$url,500,300);
+    }
+
+    function heartbeat(){
+
+        $.ajax({
+            type: "POST",
+            url: [[@{/sys/userinfo/heartbeat}]],
+            data:{
+            },
+            dataType:'json',
+            success:function (data) {
+                console.log("data->code:"+data.code);
+                if (data.code == 0) {
+
+
+                } else {
+                    // layer.alert("登录失败<br/>"+data.msg, {
+                    //     icon: 2
+                    // });
+                    //
+                    window.location.href = [[@{/home/index}]];
+                }
+            },
+            error:function (data) {
+                // alert("提交失败"+JSON.stringify(data));
+                window.location.href = [[@{/home/index}]];
+            }
+        });
+        return false;
+
+    }
+
+   // time = setInterval("heartbeat()",30000);
+
+</script>
+
+</html>

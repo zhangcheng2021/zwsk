@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+    <title>申报审核管理</title>
+</head>
+
+<body>
+    <div th:replace="common/child_nav :: child_nav">
+
+    </div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5" id="from_serach">
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <select name="territoryId" id="territoryId">
+                                <option value="0">选择专业领域</option>
+                                <option th:selected="${item.id} eq ${query.territoryId}" th:each="item:${coreTerritory}" th:value="${item.id}" th:text="${item.name}"></option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <select name="typeId" id="typeId">
+                                <option value="0">选择人才类型</option>
+                                <option th:selected="${item.id} eq ${query.typeId}" th:each="item:${coreProjectType}" th:value="${item.id}" th:text="${item.name}"></option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <select name="batchId" id="batchId">
+                                <option value="0">选择申报批次</option>
+                                <option th:selected="${item.id} eq ${query.batchId}" th:each="item:${reviewBatch}" th:value="${item.id}" th:text="${item.name}"></option>
+                            </select>
+                        </div>
+
+
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input type="text" name="userName" id="userName" th:value="${query.userName}" placeholder="请输入申报人姓名" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input type="text" name="productName" id="productName" th:value="${query.productName}" placeholder="请输入申报项目" autocomplete="off" class="layui-input">
+                        </div>
+
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input th:value="${pageInfo.number}" name="pageNumber" id="pageNumber" value="0" type="hidden"/>
+                            <button class="layui-btn" lay-submit="" lay-filter="sreach">
+                                <i class="layui-icon">&#xe615;</i>查询</button>
+                        </div>
+                    </form>
+                </div>
+
+
+                <div class="layui-card-header">
+                    <button class="layui-btn" onclick="xadmin.open('添加申报审核','./addInput',960,640)"><i class="layui-icon"></i>添加</button>
+                    <button class="layui-btn" onclick="xadmin.open('导入申报审核','./imports',1024,640)"><i class="layui-icon">&#xe67c;</i>导入</button>
+                    <button class="layui-btn" onclick="document.getElementById('down-template').click();"><i class="layui-icon">&#xe601;</i>下载导入模板</button>
+                    <a href="/common/dl_template/XMSHLB" target="_blank" id="down-template"></a>
+                </div>
+                <div class="layui-card-body layui-table-body layui-table-main">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" lay-filter="checkall" name="" lay-skin="primary">
+                            </th>
+                            <th>序号</th>
+                            <th>姓名</th>
+                            <th>性别</th>
+                            <th>评审批次</th>
+                            <th>申报单位</th>
+                            <th>申报项目</th>
+                            <th>人才类型</th>
+                            <th>专业领域</th>
+                            <th>专业方向</th>
+                            <th>推荐地</th>
+                            <th>操作</th></tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item,stat:${pageInfo.content}">
+                            <td>
+                                <input type="checkbox" name="id" value="1"   lay-skin="primary">
+                            </td>
+                            <td th:text="${stat.count}">0</td>
+                            <td th:text="${item.userName}"></td>
+                            <td th:text="${item.sex}==0?'女':'男'"></td>
+                            <td th:text="${item.batchName}"></td>
+                            <td th:text="${item.workCompany}"></td>
+                            <td th:text="${item.productName}"></td>
+                            <td th:text="${item.typeName}"></td>
+                            <td th:text="${item.territoryName}"></td>
+                            <td th:text="${item.majorField}"></td>
+                            <td th:text="${item.recommend}"></td>
+                            <td class="td-manage">
+                                <a title="编辑"  th:if="${item.isDel eq 0}" th:onclick="editInput([[${item.id}]])" href="javascript:;">
+                                    <i class="layui-icon">&#xe642;</i>编辑
+                                </a>
+                                <a title="详情" th:if="${item.isDel eq 0}" th:onclick="detail([[${item.id}]])" href="javascript:void(0);">
+                                    <i class="layui-icon">&#xe63c;</i>详情
+                                </a>
+                                <a title="删除" th:if="${item.isDel eq 0}" th:onclick="menu_del(this,[[${item.id}]],-1)" href="javascript:void(0);">
+                                    <i class="layui-icon">&#xe640;</i>删除
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-body ">
+                    <div class="page">
+                        <div th:replace="common/pageinfo :: pageinfo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['laydate','form'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+        var $ = layui.jquery;
+        // 监听全选
+        form.on('checkbox(checkall)', function(data){
+
+            if(data.elem.checked){
+                $('tbody input').prop('checked',true);
+            }else{
+                $('tbody input').prop('checked',false);
+            }
+            form.render('checkbox');
+        });
+
+        form.on('submit(sreach)', function (data) {
+            console.log("sreach.....");
+            //form.submit();
+            $("#pageNumber").val(1);
+            $("#from_serach").submit();
+            return false;
+        });
+    });
+
+    function onpage(pageNumber) {
+        $("#pageNumber").val(pageNumber);
+        console.log("pageNumber:"+pageNumber)
+        $("#from_serach").submit();
+    };
+    function editInput(id) {
+        xadmin.open('修改申报审核','./editInput?id='+id,960,640);
+    }
+
+    function detail(id) {
+        xadmin.open('申报审核详情','./detail/'+id,1024,640);
+    }
+
+    /*用户-删除*/
+    function menu_del(obj,id,status){
+        $msg=status == 0?"恢复":"删除";
+        layer.confirm('确认要'+$msg+'吗？',function(index){
+            //发异步删除数据
+            //$(obj).parents("tr").remove();
+            //layer.msg('已删除!',{icon:1,time:1000});
+            $.ajax({
+                type: "POST",
+                url: "./delete",
+                data:{id:id,status:status},
+                dataType:'json',
+                success:function (data) {
+                    console.log("data->code:"+data.code);
+                    if (data.code == 0) {
+                            layui.layer.alert($msg+"成功", {
+                                    icon: 6
+                                },
+                                function () {
+                                    // 进行刷新
+                                    location.reload();
+                                });
+
+                        // return true;
+
+                    } else {
+                        layer.alert($msg+"失败", {
+                                icon: 2
+                            },
+                            function () {
+                                //关闭当前frame
+                                // xadmin.close();
+
+                                // 可以对父窗口进行刷新
+                                // location.reload();
+                            });
+                        //
+                    }
+                },
+                error:function (data) {
+                    alert("提交失败"+JSON.stringify(data));
+                }
+            });
+
+            return false;
+        });
+    }
+
+    function delAll (argument) {
+        var ids = [];
+
+        // 获取选中的id
+        $('tbody input').each(function(index, el) {
+            if($(this).prop('checked')){
+                ids.push($(this).val())
+            }
+        });
+
+        layer.confirm('确认要删除吗？'+ids.toString(),function(index){
+            //捉到所有被选中的，发异步进行删除
+            layer.msg('删除成功', {icon: 1});
+            $(".layui-form-checked").not('.header').parents('tr').remove();
+        });
+    }
+</script>
+</html>

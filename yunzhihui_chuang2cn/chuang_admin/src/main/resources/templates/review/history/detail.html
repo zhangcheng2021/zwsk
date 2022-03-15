@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+	<title>历史评审详情</title>
+</head>
+
+<style>
+ 	.group-normal{background-color: #e2e2e2;margin-bottom: 2px !important;color: #2E2D3C}
+    .group-select{background-color: #5FB878;}
+    .group-normal:hover{font-weight: bold;color: #2E2D3C}
+</style>
+<body>
+<div th:replace="common/child_nav :: child_nav"></div>
+<form id="refreshForm">
+	<input type="hidden" id="currentSpecId" name="currentSpecId" th:value="${currentSpecId}">
+</form>
+<div class="layui-fluid" id="LAY-component-grid-list">
+  <div class="layui-row layui-col-space10">
+	<div class="layui-col-sm12">
+		 <div class="layui-card">
+			<div class="layui-card-header" style="text-align: left;font-weight: bold;">
+				基本信息
+				<a class="layui-btn layui-btn-small layui-btn-danger" style="line-height:1.6em;margin-top:3px;float:right" onclick="xadmin.del_tab();" title="关闭">
+					<i class="layui-icon layui-icon-close" style="line-height:30px"></i></a>
+			</div>
+			<div class="layui-card-body">
+		
+				<div class="layui-row">
+					<div class="layui-col-sm3">
+						<label class="layui-form-label" th:text="'姓名：'+${detail.pi_user_name}" style="width: 100%;text-align: left;">-</label>
+					</div>
+					<div class="layui-col-sm3">
+							<label class="layui-form-label" th:text="'分值：'+${detail.rp_score_}" style="width: 100%;text-align: left;">-</label>
+						</div>
+						
+					<div class="layui-col-sm6">
+						<label class="layui-form-label" th:text="'项目名称：'+${detail.pi_product_name}" style="width: 100%;text-align: left;">-</label>
+					</div>
+					<div class="layui-col-sm3">
+							<label class="layui-form-label" th:text="'申报单位：'+${detail.pi_work_company}" style="width: 100%;text-align: left;">-</label>
+						</div>
+						<div class="layui-col-sm3">
+							<label class="layui-form-label" th:text="'专业领域：'+${detail.ct_name_}" style="width: 100%;text-align: left;">-</label>
+						</div>
+						<div class="layui-col-sm3">
+							<label class="layui-form-label" th:text="'人才类型：'+${detail.cpt_name_}" style="width: 100%;text-align: left;">-</label>
+						</div>
+						<div class="layui-col-sm3">
+							<label class="layui-form-label" th:text="'专业方向：'+${detail.pi_major_field}" style="width: 100%;text-align: left;">-</label>
+						</div>
+						
+					</div>
+			</div>
+		</div>
+	</div>
+    <div class="layui-col-sm2">
+      <!-- 填充内容 -->
+      <div class="layui-card">
+        <div class="layui-card-header" style="text-align: center;font-weight: bold;">专家列表</div>
+        <div class="layui-card-body">
+          <div class="layui-btn-container">
+            <button th:each="item:${specInfoList}" class="layui-btn layui-btn-fluid group-normal" th:data-specid="${item.id}" th:text="${item.userName}"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="layui-col-sm10">
+      <div class="layui-card">
+        <div class="layui-card-body" style="padding: 1px 1px;">
+			<div class="layui-row layui-col-space10">
+				<div class="layui-col-sm7">
+					<div class="layui-card">
+					
+						<div class="layui-card-header" style="font-weight: bold;">评分明细</div>
+							<div class="layui-card-body" style="padding: 1px 1px;">
+							  <div class="layui-card-body layui-table-body layui-table-main">
+									<table class="layui-table layui-form" style="margin: 0">
+										<thead>
+											<tr>
+											<th>评价类别</th>
+											<th>评价内容</th>
+											</tr>
+										</thead>
+										<tbody>
+										<tr th:each="item:${recordDetailList}">
+											<td th:text="${item.ruleName}"></td>
+											<td th:text="${item.ruleDetailName}"></td>
+										</tr>
+										<tr>
+											<td colspan="2" style="text-align:right;padding-right: 25px;">
+												专家评分：[[${specScore}]]
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+							
+					</div>
+				</div>
+				
+				<div class="layui-col-sm5">
+					<div class="layui-card">
+					
+						<div class="layui-card-header" style="font-weight: bold;">评审意见</div>
+						<div class="layui-card-body" th:text="${specReviewInfo.remark} ?: '-'"></div>
+						<hr>
+						<div class="layui-card-header" style="font-weight: bold;">评审时间</div>
+						<div class="layui-card-body" th:text="${#dates.format(specReviewInfo.createTime,'yyyy-MM-dd HH:mm')} ?: '-'"></div>
+						<hr>
+						<div class="layui-card-header" style="font-weight: bold;">专家签名</div>
+						<div class="layui-card-body">
+							  <img style="width:200px;" th:src="${signUrl}">
+						</div>
+							
+					</div>
+				</div>
+				
+			</div>
+		 
+				
+		</div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script>
+layui.use(['laydate','form'], function(){
+  var $ = layui.$
+  ,table = layui.table
+  ,laydate = layui.laydate
+  ,form = layui.form
+  ,element = layui.element;
+  $('.group-normal[data-specid=[[${currentSpecId}]]]').addClass('group-select');
+
+  $('.group-normal').on('click',function(){
+	let $that=$(this);
+	let currId=$that.attr('data-specid');
+	//只有切换是，才提交form
+	if(currId != $('#currentSpecId').val()){
+		$('.group-normal').removeClass('group-select');
+		$that.addClass('group-select');
+		$('#currentSpecId').val(currId);
+		$('#refreshForm').submit();
+	}
+  });
+  
+});
+</script>

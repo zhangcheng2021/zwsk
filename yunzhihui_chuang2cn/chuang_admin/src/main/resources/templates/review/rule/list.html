@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+    <title>评分规则管理</title>
+</head>
+
+<body>
+    <div th:replace="common/child_nav :: child_nav">
+
+    </div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">
+<!--                    <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>-->
+                    <button class="layui-btn" onclick="xadmin.open('添加评分规则','./addInput',800,600)"><i class="layui-icon">&#xe654;</i>添加</button>
+                </div>
+                <div class="layui-card-body layui-table-body layui-table-main">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>规则名称</th>
+                            <th>项目类型</th>
+                            <th>答辩时长</th>
+                            <th>备注</th>
+                            <th>操作</th></tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="model,stat:${pageInfo.content}">
+<!--                            <td>-->
+<!--                                <input type="checkbox" name="id" value="1"   lay-skin="primary">-->
+<!--                            </td>-->
+                            <td th:text="${stat.count}">0</td>
+                            <td th:text="${model.name}"></td>
+                            <td th:text="${model.projectTypeName}"></td>
+                            <td th:text="${model.duration}"></td>
+                            <td th:text="${model.remark}"></td>
+
+                            <td class="td-manage">
+                                <a title="编辑"  th:if="${model.isDel eq 0}" th:onclick="editInput([[${model.id}]])" href="javascript:;">
+                                    <i class="layui-icon">&#xe642;</i>编辑
+                                </a>
+                                <a title="删除" th:if="${model.isDel eq 0}" th:onclick="menu_del(this,[[${model.id}]],-1)" href="javascript:void(0);">
+                                    <i class="layui-icon">&#xe640;</i>删除
+                                </a>
+                                <a title="恢复" th:if="${model.isDel ne 0}" th:onclick="menu_del(this,[[${model.id}]],0)" href="javascript:void(0);">
+                                    <i class="layui-icon">&#xe669;</i>恢复</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-body ">
+                    <div class="page">
+                        <div th:replace="common/pageinfo :: pageinfo">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['laydate','form'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+        var $ = layui.jquery;
+        // 监听全选
+        form.on('checkbox(checkall)', function(data){
+
+            if(data.elem.checked){
+                $('tbody input').prop('checked',true);
+            }else{
+                $('tbody input').prop('checked',false);
+            }
+            form.render('checkbox');
+        });
+
+        form.on('submit(sreach)', function (data) {
+            console.log("sreach.....");
+
+            //form.submit();
+            $("#pageNumber").val(1);
+            $("#from_serach").submit();
+            return false;
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#start' //指定元素
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#end' //指定元素
+        });
+
+
+
+    });
+
+    function onpage(pageNumber) {
+        $("#pageNumber").val(pageNumber);
+        console.log("pageNumber:"+pageNumber)
+
+        $("#from_serach").submit();
+
+
+    };
+
+
+
+
+    function editInput(id) {
+        xadmin.open('编辑评分规则','./editInput?id='+id,800,600);
+
+    }
+
+    // $("#from_serach").onclick(function(){
+    //     $("#from_serach").submit();
+    //
+    // });
+    /*用户-停用*/
+    function member_stop(obj,id){
+        layer.confirm('确认要停用吗？',function(index){
+
+            if($(obj).attr('title')=='启用'){
+
+                //发异步把用户状态进行更改
+                $(obj).attr('title','停用')
+                $(obj).find('i').html('&#xe62f;');
+
+                $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('已停用');
+                layer.msg('已停用!',{icon: 5,time:1000});
+
+            }else{
+                $(obj).attr('title','启用')
+                $(obj).find('i').html('&#xe601;');
+
+                $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('已启用');
+                layer.msg('已启用!',{icon: 5,time:1000});
+            }
+
+        });
+    }
+
+    /*用户-删除*/
+    function menu_del(obj,id,status){
+        $msg=status == 0?"恢复":"删除";
+        layer.confirm('确认要'+$msg+'吗？',function(index){
+            //发异步删除数据
+            //$(obj).parents("tr").remove();
+            //layer.msg('已删除!',{icon:1,time:1000});
+
+
+            $.ajax({
+                type: "POST",
+                url: "./delete",
+                data:{id:id,status:status},
+                dataType:'json',
+                success:function (data) {
+                    console.log("data->code:"+data.code);
+                    if (data.code == 0) {
+
+                            layui.layer.alert($msg+"成功", {
+                                    icon: 6
+                                },
+                                function () {
+                                    // 进行刷新
+                                    location.reload();
+                                });
+
+                        // return true;
+
+                    } else {
+                        layer.alert($msg+"失败", {
+                                icon: 2
+                            },
+                            function () {
+                                //关闭当前frame
+                                // xadmin.close();
+
+                                // 可以对父窗口进行刷新
+                                // location.reload();
+                            });
+                        //
+                    }
+                },
+                error:function (data) {
+                    alert("提交失败"+JSON.stringify(data));
+                }
+            });
+
+            return false;
+        });
+    }
+
+
+
+    function delAll (argument) {
+        var ids = [];
+
+        // 获取选中的id
+        $('tbody input').each(function(index, el) {
+            if($(this).prop('checked')){
+                ids.push($(this).val())
+            }
+        });
+
+        layer.confirm('确认要删除吗？'+ids.toString(),function(index){
+            //捉到所有被选中的，发异步进行删除
+            layer.msg('删除成功', {icon: 1});
+            $(".layui-form-checked").not('.header').parents('tr').remove();
+        });
+    }
+</script>
+</html>

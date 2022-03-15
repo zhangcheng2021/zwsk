@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+    <head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+        <title>添加新菜单</title>
+    </head>
+
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row">
+                <form class="layui-form">
+                    <div class="layui-form-item">
+                        <label for="name" class="layui-form-label">
+                            <span class="x-red">*</span>菜单名称
+                        </label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="name" name="name" placeholder="请输入菜单名称" lay-verify="name_verify" required=""
+                                   autocomplete="off" class="layui-input">
+                        </div>
+<!--                        <div class="layui-form-mid layui-word-aux">-->
+<!--                            <span class="x-red">*</span>将会成为您唯一的登入名-->
+<!--                        </div>-->
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="url" class="layui-form-label">
+                            <span class="x-red">*</span>URL
+                        </label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="url" name="url" required="" lay-verify="url_verify"
+                                   autocomplete="off" placeholder="请输入URL" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label for="parentId" class="layui-form-label">
+                            <span class="x-red">*</span>所属菜单
+                        </label>
+                        <div class="layui-input-inline">
+                            <select name="parentId" id="parentId" >
+
+                                <option  th:each="menu:${parentMap}" th:value="${menu.key}" th:text="${menu.value}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="parentId" class="layui-form-label"></label>
+                        <button class="layui-btn" lay-filter="add" lay-submit="">增加</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script>layui.use(['form', 'layer', 'jquery'],
+            function () {
+                $ = layui.jquery;
+                var form = layui.form,
+                    layer = layui.layer;
+
+                //自定义验证规则
+                form.verify({
+                    url_verify: function (value) {
+                        if (value.length < 5) {
+                            return 'URL至少不小于得5个字符';
+                        }
+                    },
+                    name_verify: function (value) {
+                        if (value.length < 2) {
+                            return '菜单名称不少于2个字符';
+                        }
+                    }
+                    //pass: [/(.+){6,12}$/, '密码必须6到12位'],
+                    // repass: function (value) {
+                    //     if ($('#L_pass').val() != $('#L_repass').val()) {
+                    //         return '两次密码不一致';
+                    //     }
+                    // }
+                });
+
+                //监听提交
+                form.on('submit(add)',
+                    function (data) {
+                        console.log(data);
+                        console.log(data.field);
+                        //发异步，把数据提交给php
+                        $.ajax({
+                            type: "POST",
+                            url: "./add",
+                            data:data.field,
+                            dataType:'json',
+                            success:function (data) {
+                                console.log("data->code:"+data.code);
+                                if (data.code == 0) {
+                                    console.log("添加成功。。。。。");
+                                    layui.layer.alert("添加成功", {
+                                            icon: 6
+                                        },
+                                        function () {
+                                            console.log("添加成功。1111。。。。");
+                                            //关闭当前frame
+                                            xadmin.close();
+
+                                            // 可以对父窗口进行刷新
+                                            xadmin.father_reload();
+                                            console.log("添加成功。。。111。。");
+                                        });
+
+                                    console.log("添加成功。。。。。111");
+                                    // return true;
+
+                                } else {
+                                    layer.alert("添加失败", {
+                                            icon: 2
+                                        },
+                                        function () {
+                                            //关闭当前frame
+                                            // xadmin.close();
+
+                                            // 可以对父窗口进行刷新
+                                            // xadmin.father_reload();
+                                        });
+                                //
+                                }
+                            },
+                            error:function (data) {
+                                alert("提交失败"+JSON.stringify(data));
+                            }
+                        });
+
+                        return false;
+                    });
+
+            });</script>
+
+    </body>
+
+</html>

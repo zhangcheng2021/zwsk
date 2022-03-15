@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head>
+    <meta charset="UTF-8">
+    <title>后台登录-[[${_SYS_NAME}]]</title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link th:href="@{/css/font.css}" rel="stylesheet">
+    <link th:href="@{/css/login.css}" rel="stylesheet">
+    <link th:href="@{/css/xadmin.css}" rel="stylesheet">
+
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.md5.js}"></script>
+    <script type="text/javascript" th:src="@{/lib/layui/layui.js}"></script>
+    <style>
+        .login input[type=text], .login input[type=file], .login input[type=password] {font-size:16px !important;}
+    </style>
+</head>
+<body class="login-bg">
+<div class="top_title_box">
+    <img th:src="@{/images/logo.png}" alt="">
+    <h2>[[${_SYS_NAME}]]-后台管理系统</h2>
+</div>
+
+<div class="login layui-anim layui-anim-up">
+    <div class="message">[[${_SYS_NAME}]]-管理登录</div>
+    <!--<div id="darkbannerwrap"></div>-->
+
+    <form method="post" class="layui-form" >
+        <input name="loginName" autocomplete="off" maxlength="32"   id="loginName" placeholder="用户名"  type="text" lay-verify="login_name_verify" class="layui-input" >
+        <hr class="hr15">
+        <input name="passwd" autocomplete="off"  maxlength="32" id="passwd" lay-verify="passwd_verify" placeholder="密码"  type="password" class="layui-input">
+        <hr class="hr15">
+        <input name="imgCode" autocomplete="off" maxlength="4"  id="imgCode" style="width: 150px;float: left;" lay-verify="required" placeholder="验证码"  type="text" class="layui-input">
+        <img id="img_vcode" onclick="imgrefresh()" th:src="@{/images/verify?type=1}" style="width: 100px;float: left;padding-left: 10px;cursor: pointer "/>
+        <hr class="hr15">
+        <input value="登录" lay-submit lay-filter="login" style="width:100%;" type="submit">
+        <hr class="hr20" >
+
+    </form>
+</div>
+
+<script>
+    $(function() {
+        var login_url = "[[@{/login/login}]]";
+
+        layui.use('form', function(){
+            var form = layui.form;
+            // layer.msg('玩命卖萌中', function(){
+            //   //关闭后的操作
+            //   });
+
+            form.verify({
+                login_name_verify: function (value) {
+                    if (value.length < 1) {
+                        return '登录名不能为空';
+                    }
+                },
+                passwd_verify: function (value) {
+                    if (value.length < 1) {
+                        return '密码不能为空';
+                    }
+                }
+            });
+            //监听提交
+            form.on('submit(login)', function(data){
+                $loginName = $("#loginName").val();
+                $imgCode = $("#imgCode").val();
+                //$passwd = $.md5($("#passwd").val());
+                // $passwd =$.md5($("#passwd").val());
+                $passwd = $("#passwd").val();
+
+                console.log("passwd md5:"+$passwd)
+
+
+
+                $.ajax({
+                    type: "POST",
+                    url: login_url,
+                    data:{
+                        "loginName": $loginName,
+                        "passwd": $passwd,
+                        "imgCode": $imgCode
+                    },
+                    dataType:'json',
+                    success:function (data) {
+                        console.log("data->code:"+data.code);
+                        if (data.code == 0) {
+                            window.location.href = "[[@{/home/index}]]";
+
+                        } else {
+                            layer.alert("登录失败<br/>"+data.msg, {
+                                    icon: 2
+                                });
+                            //
+                        }
+                    },
+                    error:function (data) {
+                        alert("提交失败"+JSON.stringify(data));
+                    }
+                });
+                return false;
+            });
+        });
+    });
+    function imgrefresh(){
+        $("#img_vcode").attr("src","../images/verify?type=1&n"+Math.random());
+    };
+
+</script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+    <title>添加项目类型</title>
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form action="" method="post" class="layui-form layui-form-pane">
+
+            <div class="layui-form-item layui-form-text">
+                <label for="" class="layui-form-label">
+                    <span class="x-red"></span>本批次共有[[${productCount}]]个项目参与申报，涉及[[${territorieCount}]]个专业领域，分布如下：
+                </label>
+                <div th:if="${productCount>0}" class="layui-input-block">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th width="20%">分组名称</th>
+                            <th width="50%">专业领域</th>
+                            <th width="10%">人数</th>
+                            <th width="10%">组数</th>
+                            <th width="10%"></th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbody">
+                        <tr class="tr_001" th:each="group:${groupList}" th:attr="data-id=${group.id},data-batchid=${model.id}">
+                            <td>
+                                <textarea placeholder="请输入内容"  class="layui-textarea" th:text="${group.name}"></textarea>
+                            </td>
+                            <td>
+                                <input type="checkbox" class="ter_check" th:attr="data-id=${group.id}" th:each="territorie:${territorieList}" th:checked="${#arrays.contains(#strings.arraySplit(group.territoryIds,','),#strings.toString(territorie.id))}" th:title="${territorie.name}"  lay-filter="checkall" name="ckeck_ter" lay-skin="primary"  th:value="${territorie.id}">
+                            </td>
+                            <td class="td_count_1" th:text="${group.ProductCount}">
+                            </td>
+                            <td class="td_count_2" th:text="${#numbers.formatInteger(group.productCount/31,0)}+1">
+                            </td>
+                            <td><a class="ter_del">删除</a></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="5" style="text-align: center" ><a id="add_table" lay-submit="" lay-filter="addGroup" style="cursor: pointer">继续添加分组</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="layui-form-item" th:if="${productCount>0}">
+                <button class="layui-btn" lay-submit="" lay-filter="add">开始评审</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>layui.use(['form', 'layer', 'jquery','laydate'],
+    function () {
+        $ = layui.jquery;
+        var form = layui.form,
+            layer = layui.layer;
+
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#reviewDate' //指定元素
+        });
+
+
+
+        form.on('checkbox(checkall)', function(data){
+            var vals = [];
+            $(data.elem).parent().find('.ter_check').each(function(){
+
+                if($(this).prop('checked')){
+                    console.log("id----->"+$(this).val());
+                    vals.push($(this).val());
+                }
+            });
+
+            loadProductCount(vals,$(data.elem));
+        });
+        //自定义验证规则
+        form.verify({
+            url_verify: function (value) {
+                if (value.length < 5) {
+                    return 'URL至少不小于得5个字符';
+                }
+            },
+            name_verify: function (value) {
+                if (value.length < 2) {
+                    return '菜单名称不少于2个字符';
+                }
+            }
+        });
+        form.on('checkbox(father)', function (data) {
+
+            if (data.elem.checked) {
+                $(data.elem).parent().siblings('td').find('input').prop("checked", true);
+                form.render();
+            } else {
+                $(data.elem).parent().siblings('td').find('input').prop("checked", false);
+                form.render();
+            }
+        });
+
+        form.on('submit(addGroup)',function (data){
+            addTrHtml($(data.elem),form);
+        })
+
+        //监听提交
+        form.on('submit(add)',
+            function (data) {
+                console.log(data);
+                console.log(data.field);
+                //发异步，把数据提交给php
+                //alert(vals);
+                // ;
+                var vals = [];
+                $($("#tbody").find(".tr_001")).each(function(){
+                    $id=$(this).data("id");
+                    $batchid=$(this).data("batchid");
+                    var ids =[];
+                    $(this).find('.ter_check').each(function(){
+                        if($(this).prop('checked')){
+                            console.log("id----->"+$(this).val());
+                            ids.push($(this).val());
+                        }
+                    });
+                    $name = $(this).find('textarea').val();
+
+                    vals.push({"id":$id,"name":$name,"territoryIds":ids.toString(),"batchId":$batchid});
+                });
+                console.log("vals json:"+JSON.stringify(vals))
+                // return false;
+                $.ajax({
+                    type: "POST",
+                    url: "./start",
+                    data:JSON.stringify(vals),
+                    headers : {"content-type" : "application/json;charset=UTF-8"},
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log("data->code:" + data.code);
+                        if (data.code == 0) {
+                            layui.layer.alert("添加成功", {
+                                    icon: 6
+                                },
+                                function () {
+                                    //关闭当前frame
+                                    xadmin.close();
+
+                                    // 可以对父窗口进行刷新
+                                    xadmin.father_reload();
+                                });
+                        } else {
+                            layer.alert("添加失败", {
+                                    icon: 2
+                                },
+                                function () {
+                                    //关闭当前frame
+                                    // xadmin.close();
+
+                                    // 可以对父窗口进行刷新
+                                    // xadmin.father_reload();
+                                });
+                            //
+                        }
+                    },
+                    error: function (data) {
+                        alert("提交失败" + JSON.stringify(data));
+                    }
+                });
+
+                return false;
+            });
+
+    });
+
+
+//
+// function territoryChecked () {
+//     $(".ter_check").click(function(){
+//         $(this).parents("td").find("checkbox").each(function(){
+//             console.log("id----->"+$(this).val());
+//         });
+//     });
+//
+// }
+//
+// territoryChecked();
+
+function loadProductCount(vals,obj){
+    if(vals.length <1){
+        obj.parent().parent().find(".td_count_1").html(0);
+        obj.parent().parent().find(".td_count_2").html(0);
+
+
+        return;
+    }
+    $id= [[${model.id}]];
+    console.log("$id:"+$id);
+    $.ajax({
+        type: "POST",
+        url: "./loadProductCount",
+        data:{
+            id:$id,
+            "tids":vals.toString()
+        },
+        dataType: 'json',
+        success: function (data) {
+            console.log("data->code:" + data.code);
+            if (data.code == 0) {
+                $productCount = data.data.productCount;
+                $groupCount = data.data.groupCount;
+                console.log("$productCount:"+$productCount+",$groupCount"+$groupCount);
+                obj.parent().parent().find(".td_count_1").html($productCount);
+                obj.parent().parent().find(".td_count_2").html($groupCount);
+
+            } else {
+
+            }
+        },
+        error: function (data) {
+            alert("提交失败" + JSON.stringify(data));
+        }
+    });
+}
+
+
+function delth(){
+    $(".ter_del").click(function(){
+        $(this).parents('tr').remove();
+    });
+}
+
+
+
+
+function addTrHtml(obj,f){
+    $.ajax({
+        type: "POST",
+        url: "../../../core/territory/loadList",
+        data:{
+        },
+        dataType: 'json',
+        success: function (data) {
+            console.log("data->code:" + data.code);
+            $html =
+                "                        <tr  class=\"tr_001\" data-id='0' data-batchid='[[${model.id}]]'>" +
+                "                            <td>" +
+                "                                <textarea placeholder=\"请输入分组名称\"  class=\"layui-textarea\"></textarea>" +
+                "                            </td>" +
+                "                            <td>" ;
+            if (data.code == 0) {
+                $.each(data.data,function(k,v){
+                    $html +="<input type=\"checkbox\" class=\"ter_check\"  lay-filter=\"checkall\" name=\"ckeck_ter\" value='"+v.id+"' title='"+v.name+"' lay-skin=\"primary\"/> " ;
+                });
+
+            }
+            $html +=
+                "                            </td>" +
+                "                            <td class=\"td_count_1\">0</td>" +
+                "                            <td class=\"td_count_2\">0</td>" +
+                "                            <td><a class=\"ter_del\">删除</a></td>" +
+                "                        </tr>"
+            obj.parents('tr').before($html);
+            f.render();
+            delth();
+        },
+        error: function (data) {
+            alert("提交失败" + JSON.stringify(data));
+        }
+    });
+}
+
+delth();
+    </script>
+
+</body>
+</html>

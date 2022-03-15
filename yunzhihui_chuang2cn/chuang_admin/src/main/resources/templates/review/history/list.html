@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+    <title>历史评审管理</title>
+</head>
+
+<body>
+    <div th:replace="common/child_nav :: child_nav">
+
+    </div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5" id="from_serach">
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <select name="queryTerritoryId" id="queryTerritoryId">
+                                <option value="0">选择专业领域</option>
+                                <option th:selected="${item.id} eq ${query.queryTerritoryId}" th:each="item:${coreTerritory}" th:value="${item.id}" th:text="${item.name}"></option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <select name="queryTypeId" id="queryTypeId">
+                                <option value="0">选择人才类型</option>
+                                <option th:selected="${item.id} eq ${query.queryTypeId}" th:each="item:${coreProjectType}" th:value="${item.id}" th:text="${item.name}"></option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <select name="queryBatchId" id="queryBatchId" lay-filter="queryBatchId">
+                                <option value="0">选择申报批次</option>
+                                <option th:selected="${item.id} eq ${query.queryBatchId}" th:each="item:${reviewBatch}" th:value="${item.id}" th:text="${item.name}"></option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <select name="queryGroupId" id="queryGroupId">
+                                <option value="0">选择评审分组</option>
+                                <option th:selected="${item.id} eq ${query.queryGroupId}" th:each="item:${reviewGroup}" th:value="${item.id}" th:text="${item.name}"></option>
+                            </select>
+                        </div>
+
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input type="text" name="queryUserName" id="queryUserName" th:value="${query.queryUserName}" placeholder="请输入申报人姓名" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input type="text" name="queryProductName" id="queryProductName" th:value="${query.queryProductName}" placeholder="请输入申报项目" autocomplete="off" class="layui-input">
+                        </div>
+
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input th:value="${pageInfo.number}" name="pageNumber" id="pageNumber" value="0" type="hidden"/>
+                            <button class="layui-btn" lay-submit="" lay-filter="sreach">
+                                <i class="layui-icon">&#xe615;</i>查询</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="layui-card-body layui-table-body layui-table-main">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>姓名</th>
+                            <th>性别</th>
+                            <th>评审批次</th>
+                            <th>申报单位</th>
+                            <th>申报项目</th>
+                            <th>人才类型</th>
+                            <th>专业领域</th>
+                            <th>专业方向</th>
+                            <th>推荐地</th>
+                            <th>评审结果</th>
+                            <th>操作</th></tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item,stat:${pageInfo.content}">
+                            <td th:text="${stat.count}">0</td>
+                            <td th:text="${item.pi_user_name}"></td>
+                            <td th:text="${item.pi_sex_}==0?'女':'男'"></td>
+                            <td th:text="${item.rb_name_}"></td>
+                            <td th:text="${item.pi_work_company}"></td>
+                            <td th:text="${item.pi_product_name}"></td>
+                            <td th:text="${item.cpt_name_}"></td>
+                            <td th:text="${item.ct_name_}"></td>
+                            <td th:text="${item.pi_major_field}"></td>
+                            <td th:text="${item.pi_recommend_}"></td>
+                            <td th:text="${item.rp_score_}">通过(80)</td>
+                            <td class="td-manage">
+                                <a title="详情" th:onclick="detail([[${item.pi_id}]])" href="javascript:void(0);">
+                                    <i class="layui-icon">&#xe63c;</i>详情
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-body ">
+                    <div class="page">
+                        <div th:replace="common/pageinfo :: pageinfo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['laydate','form'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+        var $ = layui.jquery;
+        // 监听全选
+        form.on('checkbox(checkall)', function(data){
+
+            if(data.elem.checked){
+                $('tbody input').prop('checked',true);
+            }else{
+                $('tbody input').prop('checked',false);
+            }
+            form.render('checkbox');
+        });
+
+        form.on('submit(sreach)', function (data) {
+            console.log("sreach.....");
+            //form.submit();
+            $("#pageNumber").val(1);
+            $("#from_serach").submit();
+            return false;
+        });
+
+        form.on('select(queryBatchId)', function (data) {
+            if(data.value==0){
+                $('#queryGroupId').html('<option value="0">选择评审分组</option>');
+                form.render('select');
+            }else{
+                $.ajax({
+                    type: "POST",
+                    url: "./cascadeGroup/"+data.value,
+                    data:{},
+                    dataType:'json',
+                    success:function (data) {
+                        if (data.code == 0) {
+                            let _opt='<option value="0">选择评审分组</option>';
+                            if(data.data && data.data.length>0){
+                                $.each(data.data,function(i,item){
+                                    _opt+='<option value="'+item.id+'">'+item.name+'</option>'
+                                });
+                            }
+                            $('#queryGroupId').html(_opt);
+                            form.render('select');
+                        } else {
+                            layer.alert("加载批次下的评审组数据失败", { icon: 2 }, function () {  });
+                        }
+                    },
+                    error:function (data) {
+                        debugger
+                        layer.alert("提交失败"+JSON.stringify(data));
+                    }
+                });
+            }
+        });
+
+    });
+
+    function onpage(pageNumber) {
+        $("#pageNumber").val(pageNumber);
+        console.log("pageNumber:"+pageNumber)
+        $("#from_serach").submit();
+    };
+
+    function detail(id) {
+        window.top.xadmin.add_tab("评审详情","/review/history/detail/"+id);
+    }
+
+</script>
+</html>

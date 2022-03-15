@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+    <title>修改项目类型</title>
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form action="" method="post" class="layui-form layui-form-pane">
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>评审批次名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="name" name="name" th:value="${model.name}" required="" lay-verify="required"
+                           autocomplete="off" placeholder="请输入评审批次名称" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="reviewDate" class="layui-form-label">
+                    <span class="x-red">*</span>评审日期
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="reviewDate" th:value="${#dates.format(model.reviewDate,'yyyy-MM-dd')}" name="reviewDate" required="" lay-verify="required"
+                           autocomplete="off" placeholder="请输入评审日期" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="address" class="layui-form-label">
+                    <span class="x-red">*</span>评审地点
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="address" th:value="${model.address}" name="address" required="" lay-verify="required"
+                           autocomplete="off" placeholder="请输入评审地点" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label for="address" class="layui-form-label">
+                    <span class="x-red">*</span>评分规则
+                </label>
+                <div class="layui-input-block">
+                    <table class="layui-table">
+                        <tbody id="tbody">
+                        <tr th:each="batchRule:${batchRuleList}">
+                            <td th:text="${batchRule.projectTypeName}">
+                            </td>
+                            <td>
+                                <select th:attr="data-id=${batchRule.projectTypeId}">
+                                    <option th:selected="${batchRule.ruleId} eq ${rule.id} " th:each="rule:${ruleList}" th:value="${rule.id}"
+                                            th:text="${rule.name}"></option>
+                                </select>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="layui-form-item layui-form-text">
+                <label for="content" class="layui-form-label">
+                    评审须知
+                </label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入评审须知" id="content" name="content" th:text="${model.content}" class="layui-textarea"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <input type="hidden" id="id" name="id" th:value="${model.id}"/>
+                <button class="layui-btn" lay-submit="" lay-filter="add">修改</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>layui.use(['form', 'layer', 'jquery','laydate'],
+    function () {
+        $ = layui.jquery;
+        var form = layui.form,
+            layer = layui.layer;
+
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#reviewDate' //指定元素
+        });
+
+
+        //自定义验证规则
+        form.verify({
+            url_verify: function (value) {
+                if (value.length < 5) {
+                    return 'URL至少不小于得5个字符';
+                }
+            },
+            name_verify: function (value) {
+                if (value.length < 2) {
+                    return '菜单名称不少于2个字符';
+                }
+            }
+            //pass: [/(.+){6,12}$/, '密码必须6到12位'],
+            // repass: function (value) {
+            //     if ($('#L_pass').val() != $('#L_repass').val()) {
+            //         return '两次密码不一致';
+            //     }
+            // }
+        });
+        form.on('checkbox(father)', function (data) {
+
+            if (data.elem.checked) {
+                $(data.elem).parent().siblings('td').find('input').prop("checked", true);
+                form.render();
+            } else {
+                $(data.elem).parent().siblings('td').find('input').prop("checked", false);
+                form.render();
+            }
+        });
+
+        //监听提交
+        form.on('submit(add)',
+            function (data) {
+                console.log(data);
+                console.log(data.field);
+                //发异步，把数据提交给php
+                //alert(vals);
+                // ;
+                var vals = [];
+                $($("#tbody").find("select")).each(function(){
+                    $ruleId=$(this).val();
+                    $typeId = $(this).data("id");
+                    console.log("ruleId:"+$ruleId);
+                    console.log("typeId:"+$typeId);
+                    vals.push($typeId);
+                    vals.push($(this).val());
+                });
+                // return false;
+                $.ajax({
+                    type: "POST",
+                    url: "./edit",
+                    data:{"name":data.field.name,
+                        "id":data.field.id,
+                        "reviewDate":data.field.reviewDate,
+                        "address":data.field.address,
+                        "content":data.field.content,
+                        "details":vals.toString()
+                    },
+                    // headers: {"content-type": "application/json;charset=UTF-8"},
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log("data->code:" + data.code);
+                        if (data.code == 0) {
+                            layui.layer.alert("修改成功", {
+                                    icon: 6
+                                },
+                                function () {
+                                    //关闭当前frame
+                                    xadmin.close();
+
+                                    // 可以对父窗口进行刷新
+                                    xadmin.father_reload();
+                                });
+                        } else {
+                            layer.alert("修改失败", {
+                                    icon: 2
+                                },
+                                function () {
+                                    //关闭当前frame
+                                    // xadmin.close();
+
+                                    // 可以对父窗口进行刷新
+                                    // xadmin.father_reload();
+                                });
+                            //
+                        }
+                    },
+                    error: function (data) {
+                        alert("提交失败" + JSON.stringify(data));
+                    }
+                });
+
+                return false;
+            });
+
+    });
+
+    </script>
+
+</body>
+
+</html>

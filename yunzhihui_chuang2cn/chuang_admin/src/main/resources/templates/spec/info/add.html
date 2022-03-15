@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+    <head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+        <title>添加专家管理</title>
+    </head>
+
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row">
+                <form class="layui-form">
+                    <div class="layui-form-item">
+                        <label for="userName" class="layui-form-label">
+                            <span class="x-red">*</span>姓名
+                        </label>
+                        <div class="layui-input-inline" style="width:400px;">
+                            <input type="text" id="userName" name="userName"  required="" lay-verify="required"
+                                   autocomplete="off" class="layui-input" placeholder="请输入专家姓名">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="sex" class="layui-form-label">
+                            <span class="x-red">*</span>性别
+                        </label>
+                        <div class="layui-input-inline" style="width:400px;">
+                            <input type="radio" name="sex" value="1" title="男" autocomplete="off">
+                            <input type="radio" name="sex" value="0" title="女" autocomplete="off" >
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label for="mobile" class="layui-form-label">
+                            <span class="x-red">*</span>手机号码
+                        </label>
+                        <div class="layui-input-inline" style="width:400px;">
+                            <input type="text" id="mobile" name="mobile" maxlength="32" lay-verify="required|phone"  autocomplete="off" placeholder="请输入联系电话" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="age" class="layui-form-label">
+                            <span class="x-red">*</span>年龄
+                        </label>
+                        <div class="layui-input-inline" style="width:400px;">
+                            <input type="text" id="age" name="age" required="" lay-verify="required"
+                                   autocomplete="off" class="layui-input" placeholder="请输入年龄">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label for="company" class="layui-form-label">
+                            <span class="x-red">*</span>所属单位
+                        </label>
+                        <div class="layui-input-inline" style="width:400px;">
+                            <input type="text" id="company" name="company" required="" lay-verify="required"
+                                   autocomplete="off" class="layui-input" placeholder="请输入所属单位">
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label for="rank" class="layui-form-label">
+                            <span class="x-red">*</span>职务
+                        </label>
+                        <div class="layui-input-inline" style="width:400px;">
+                            <input type="text" id="rank" name="rank" required="" lay-verify="required"
+                                   autocomplete="off" class="layui-input" placeholder="请输入职务">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label for="titleId" class="layui-form-label">
+                            <span class="x-red">*</span>职称
+                        </label>
+                        <div class="layui-input-inline" style="width:400px;">
+                            <select id="titleName" name="titleId" lay-filter="aihao" >
+                                <option value="" selected="">请选择职称</option>-->
+                                <option th:each="item : ${CoreTitle}" th:value="${item.id}" th:text="${item.name}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label for="specTypeId" class="layui-form-label">
+                            <span class="x-red">*</span>专家类别
+                        </label>
+                        <div class="layui-input-inline" style="width:400px;">
+                            <select id="specTypeName" name="specTypeId" lay-filter="aihao">
+                                <option value="">请选择专家类别</option>
+                                <option th:each="item : ${CoreSpecType}" th:value="${item.id}" th:text="${item.name}"></option>
+                            </select>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="territoryId" class="layui-form-label">
+                            <span class="x-red">*</span>专业领域
+                        </label>
+                        <div class="layui-input-inline" style="width:400px;">
+                            <select id="territoryName" name="territoryId" lay-filter="aihao">
+                                <option value="">请选择专业领域</option>
+                                <option th:each="item : ${coreTerritory}" th:value="${item.id}" th:text="${item.name}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="subdivision" class="layui-form-label">
+                            <span class="x-red">*</span>细分领域
+                        </label>
+                        <div class="layui-input-inline" style="width:400px;">
+                            <input type="text" id="subdivision" name="subdivision" required="" lay-verify="required"
+                                   autocomplete="off" class="layui-input" placeholder="请输入细分领域">
+                        </div>
+                    </div>
+                        <div class="layui-form-item">
+                            <label for="level" class="layui-form-label">
+                                <span class="x-red">*</span>评星
+                            </label>
+                            <div class="layui-input-inline" style="width:400px;">
+                                <select name="level" lay-filter="aihao">
+                                    <option value="">请选择评星</option>
+                                    <option value="1">1星</option>
+                                    <option value="2">2星</option>
+                                    <option value="3">3星</option>
+                                    <option value="4">4星</option>
+                                    <option value="5">5星</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label for="cardName" class="layui-form-label">
+                                <span class="x-red">*</span>持卡人姓名
+                            </label>
+                            <div class="layui-input-inline" style="width:400px;">
+                                <input type="text" id="cardName" name="cardName"
+                                       autocomplete="off" class="layui-input" placeholder="请输入持卡人姓名">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label for="identityNo" class="layui-form-label">
+                                <span class="x-red">*</span>身份证号码
+                            </label>
+                            <div class="layui-input-inline" style="width:400px;">
+                                <input type="text" id="identityNo" name="identityNo" lay-verify="identity"
+                                       autocomplete="off" class="layui-input" placeholder="请输入身份证号码">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label for="cardNo" class="layui-form-label">
+                                <span class="x-red">*</span>银行卡号
+                            </label>
+                            <div class="layui-input-inline" style="width:400px;">
+                                <input type="text" id="cardNo" name="cardNo"
+                                       autocomplete="off" class="layui-input" placeholder="请输入银行卡号">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <label for="bankName" class="layui-form-label">
+                                <span class="x-red">*</span>开户行
+                            </label>
+                            <div class="layui-input-inline" style="width:400px;">
+                                <input type="text" id="bankName" name="bankName"
+                                       autocomplete="off" class="layui-input" placeholder="请输入开户行">
+                            </div>
+                        </div>
+
+                    <div class="layui-form-item">
+                        <label for="remark" class="layui-form-label">
+                            <span class="x-red">*</span>备注
+                        </label>
+                        <div class="layui-input-block">
+                            <textarea placeholder="请输入内容" id="remark" name="remark" cols="10" style="width:80%" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item">
+                        <label for="remark" class="layui-form-label"></label>
+                        <button class="layui-btn" lay-filter="add" lay-submit="">增加</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script>layui.use(['form', 'layer', 'jquery'],
+            function () {
+                $ = layui.jquery;
+                var form = layui.form,layer = layui.layer;
+
+                //自定义验证规则
+                form.verify({});
+
+                //监听提交
+                form.on('submit(add)',
+                    function (data) {
+                        console.log(data);
+                        console.log(data.field);
+                        // var specTypeName = $("#specTypeName").find("option:selected").text();
+                        // var titleName = $("#titleName").find("option:selected").text();
+                        // var territoryName = $("#territoryName").find("option:selected").text();
+                        // var specForm = data.field;
+                        // specForm.specTypeName=specTypeName;
+                        // specForm.titleName=titleName;
+                        // specForm.territoryName=territoryName;
+                        // console.log(specForm)
+                        var _submitFlag=true;
+                        if(!(data.field.sex=="1" || data.field.sex=="0")){
+                            layer.msg("请选择性别", { icon: 5 });
+                            _submitFlag = false;
+                        }
+                        if(_submitFlag){
+                            //发异步，把数据提交给php
+                            $.ajax({
+                                type: "POST",
+                                url: "./add",
+                                data:JSON.stringify(data.field),
+                                headers : {"content-type" : "application/json;charset=UTF-8"},
+                                dataType:'json',
+                                success:function (data) {
+                                    console.log("data->code:"+data.code);
+                                    if (data.code == 0) {
+                                        layui.layer.alert("添加成功", {
+                                                icon: 6
+                                            },
+                                            function () {
+                                                //关闭当前frame
+                                                xadmin.close();
+
+                                                // 可以对父窗口进行刷新
+                                                xadmin.father_reload();
+                                            });
+                                    } else {
+                                        layer.alert("添加失败<br/>"+data.msg, { icon: 2 },
+                                            function () {
+                                                //关闭当前frame
+                                                // xadmin.close();
+
+                                                // 可以对父窗口进行刷新
+                                                // xadmin.father_reload();
+                                            });
+                                        //
+                                    }
+                                },
+                                error:function (data) {
+                                    layer.alert("提交失败<br/>"+JSON.stringify(data), { icon: 2 });
+                                }
+                            });
+                        }
+
+                        return false;
+                    });
+
+            });</script>
+
+    </body>
+
+</html>

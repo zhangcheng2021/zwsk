@@ -1,0 +1,721 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hsmap.yuezhihui.mapper.product.ProductInfoMapper">
+  <resultMap id="BaseResultMap" type="com.hsmap.yuezhihui.entity.product.ProductInfo">
+  <id column="id" jdbcType="INTEGER" property="id" />
+  <result column="batch_id" jdbcType="INTEGER" property="batchId" />
+  <result column="batch_name" jdbcType="VARCHAR" property="batchName" />
+  <result column="territory_id" jdbcType="INTEGER" property="territoryId" />
+  <result column="territory_name" jdbcType="VARCHAR" property="territoryName" />
+  <result column="major_field" jdbcType="VARCHAR" property="majorField" />
+  <result column="type_id" jdbcType="INTEGER" property="typeId" />
+  <result column="type_name" jdbcType="VARCHAR" property="typeName" />
+  <result column="product_name" jdbcType="VARCHAR" property="productName" />
+  <result column="user_name" jdbcType="VARCHAR" property="userName" />
+  <result column="mobile_" jdbcType="VARCHAR" property="mobile" />
+  <result column="email_" jdbcType="VARCHAR" property="email" />
+  <result column="sex_" jdbcType="INTEGER" property="sex" />
+  <result column="recommend_" jdbcType="VARCHAR" property="recommend" />
+  <result column="birthday_" jdbcType="VARCHAR" property="birthday" />
+  <result column="nationality_" jdbcType="VARCHAR" property="nationality" />
+  <result column="position_" jdbcType="VARCHAR" property="position" />
+  <result column="school_name" jdbcType="VARCHAR" property="schoolName" />
+  <result column="major_" jdbcType="VARCHAR" property="major" />
+  <result column="degree_" jdbcType="VARCHAR" property="degree" />
+  <result column="work_overseas" jdbcType="VARCHAR" property="workOverseas" />
+  <result column="home_time" jdbcType="VARCHAR" property="homeTime" />
+  <result column="shao_time" jdbcType="VARCHAR" property="shaoTime" />
+  <result column="work_" jdbcType="VARCHAR" property="work" />
+  <result column="work_company" jdbcType="VARCHAR" property="workCompany" />
+  <result column="patent_" jdbcType="VARCHAR" property="patent" />
+  <result column="is_del" jdbcType="INTEGER" property="isDel" />
+  <result column="sort_" jdbcType="INTEGER" property="sort" />
+  <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  <result column="remark_" jdbcType="VARCHAR" property="remark" />
+</resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    a.id, a.batch_id, a.territory_id,  a.major_field, a.type_id,
+    a.product_name, a.user_name, a.mobile_, a.email_, a.sex_, a.recommend_, a.birthday_, a.nationality_,
+    a.position_, a.school_name, a.major_, a.degree_, a.work_overseas, a.home_time, a.shao_time, a.work_,a.work_company,
+    a.patent_, a.is_del, a.sort_, a.create_time, a.remark_, b.name_ as type_name, c.name_ as territory_name, d.name_ as batch_name
+  </sql>
+  <select id="selectByExample" parameterType="com.hsmap.yuezhihui.entity.product.ProductInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from product_info a
+    left join core_project_type b on a.type_id = b.id
+    left join core_territory c on a.territory_id = c.id
+    left join review_batch d on a.batch_id = d.id
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="pageNumber>0">
+      limit ${(pageNumber-1)*pageSize},${pageSize}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product_info a
+    left join core_project_type b on a.type_id = b.id
+    left join core_territory c on a.territory_id = c.id
+    left join review_batch d on a.batch_id = d.id
+    where a.id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from product_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.hsmap.yuezhihui.entity.product.ProductInfoExample">
+    delete from product_info
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.hsmap.yuezhihui.entity.product.ProductInfo">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into product_info (batch_id, batch_name, territory_id,
+      territory_name, major_field, type_id,
+      type_name, product_name, user_name,
+      mobile_, email_, sex_,
+      recommend_, birthday_, nationality_,
+      position_, school_name, major_,
+      degree_, work_overseas, home_time,
+      shao_time, work_, work_company, patent_,
+      is_del, sort_, create_time,
+      remark_)
+    values (#{batchId,jdbcType=INTEGER}, #{batchName,jdbcType=VARCHAR}, #{territoryId,jdbcType=INTEGER},
+      #{territoryName,jdbcType=VARCHAR}, #{majorField,jdbcType=VARCHAR}, #{typeId,jdbcType=INTEGER},
+      #{typeName,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR},
+      #{mobile,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER},
+      #{recommend,jdbcType=VARCHAR}, #{birthday,jdbcType=VARCHAR}, #{nationality,jdbcType=VARCHAR},
+      #{position,jdbcType=VARCHAR}, #{schoolName,jdbcType=VARCHAR}, #{major,jdbcType=VARCHAR},
+      #{degree,jdbcType=VARCHAR}, #{workOverseas,jdbcType=VARCHAR}, #{homeTime,jdbcType=VARCHAR},
+      #{shaoTime,jdbcType=VARCHAR}, #{work,jdbcType=VARCHAR}, #{workCompany,jdbcType=VARCHAR}, #{patent,jdbcType=VARCHAR},
+      #{isDel,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+      #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hsmap.yuezhihui.entity.product.ProductInfo">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into product_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="batchId != null">
+        batch_id,
+      </if>
+      <if test="batchName != null">
+        batch_name,
+      </if>
+      <if test="territoryId != null">
+        territory_id,
+      </if>
+      <if test="territoryName != null">
+        territory_name,
+      </if>
+      <if test="majorField != null">
+        major_field,
+      </if>
+      <if test="typeId != null">
+        type_id,
+      </if>
+      <if test="typeName != null">
+        type_name,
+      </if>
+      <if test="productName != null">
+        product_name,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="mobile != null">
+        mobile_,
+      </if>
+      <if test="email != null">
+        email_,
+      </if>
+      <if test="sex != null">
+        sex_,
+      </if>
+      <if test="recommend != null">
+        recommend_,
+      </if>
+      <if test="birthday != null">
+        birthday_,
+      </if>
+      <if test="nationality != null">
+        nationality_,
+      </if>
+      <if test="position != null">
+        position_,
+      </if>
+      <if test="schoolName != null">
+        school_name,
+      </if>
+      <if test="major != null">
+        major_,
+      </if>
+      <if test="degree != null">
+        degree_,
+      </if>
+      <if test="workOverseas != null">
+        work_overseas,
+      </if>
+      <if test="homeTime != null">
+        home_time,
+      </if>
+      <if test="shaoTime != null">
+        shao_time,
+      </if>
+      <if test="work != null">
+        work_,
+      </if>
+      <if test="workCompany != null">
+        work_company,
+      </if>
+      <if test="patent != null">
+        patent_,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+      <if test="sort != null">
+        sort_,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="remark != null">
+        remark_,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="batchId != null">
+        #{batchId,jdbcType=INTEGER},
+      </if>
+      <if test="batchName != null">
+        #{batchName,jdbcType=VARCHAR},
+      </if>
+      <if test="territoryId != null">
+        #{territoryId,jdbcType=INTEGER},
+      </if>
+      <if test="territoryName != null">
+        #{territoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="majorField != null">
+        #{majorField,jdbcType=VARCHAR},
+      </if>
+      <if test="typeId != null">
+        #{typeId,jdbcType=INTEGER},
+      </if>
+      <if test="typeName != null">
+        #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="recommend != null">
+        #{recommend,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        #{birthday,jdbcType=VARCHAR},
+      </if>
+      <if test="nationality != null">
+        #{nationality,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null">
+        #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolName != null">
+        #{schoolName,jdbcType=VARCHAR},
+      </if>
+      <if test="major != null">
+        #{major,jdbcType=VARCHAR},
+      </if>
+      <if test="degree != null">
+        #{degree,jdbcType=VARCHAR},
+      </if>
+      <if test="workOverseas != null">
+        #{workOverseas,jdbcType=VARCHAR},
+      </if>
+      <if test="homeTime != null">
+        #{homeTime,jdbcType=VARCHAR},
+      </if>
+      <if test="shaoTime != null">
+        #{shaoTime,jdbcType=VARCHAR},
+      </if>
+      <if test="work != null">
+        #{work,jdbcType=VARCHAR},
+      </if>
+      <if test="workCompany != null">
+        #{workCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="patent != null">
+        #{patent,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.hsmap.yuezhihui.entity.product.ProductInfoExample" resultType="java.lang.Long">
+    select count(*) from product_info a
+    left join core_project_type b on a.type_id = b.id
+    left join core_territory c on a.territory_id = c.id
+    left join review_batch d on a.batch_id = d.id
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update product_info
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.batchId != null">
+        batch_id = #{record.batchId,jdbcType=INTEGER},
+      </if>
+      <if test="record.batchName != null">
+        batch_name = #{record.batchName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.territoryId != null">
+        territory_id = #{record.territoryId,jdbcType=INTEGER},
+      </if>
+      <if test="record.territoryName != null">
+        territory_name = #{record.territoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.majorField != null">
+        major_field = #{record.majorField,jdbcType=VARCHAR},
+      </if>
+      <if test="record.typeId != null">
+        type_id = #{record.typeId,jdbcType=INTEGER},
+      </if>
+      <if test="record.typeName != null">
+        type_name = #{record.typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.productName != null">
+        product_name = #{record.productName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userName != null">
+        user_name = #{record.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mobile != null">
+        mobile_ = #{record.mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="record.email != null">
+        email_ = #{record.email,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sex != null">
+        sex_ = #{record.sex,jdbcType=INTEGER},
+      </if>
+      <if test="record.recommend != null">
+        recommend_ = #{record.recommend,jdbcType=VARCHAR},
+      </if>
+      <if test="record.birthday != null">
+        birthday_ = #{record.birthday,jdbcType=VARCHAR},
+      </if>
+      <if test="record.nationality != null">
+        nationality_ = #{record.nationality,jdbcType=VARCHAR},
+      </if>
+      <if test="record.position != null">
+        position_ = #{record.position,jdbcType=VARCHAR},
+      </if>
+      <if test="record.schoolName != null">
+        school_name = #{record.schoolName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.major != null">
+        major_ = #{record.major,jdbcType=VARCHAR},
+      </if>
+      <if test="record.degree != null">
+        degree_ = #{record.degree,jdbcType=VARCHAR},
+      </if>
+      <if test="record.workOverseas != null">
+        work_overseas = #{record.workOverseas,jdbcType=VARCHAR},
+      </if>
+      <if test="record.homeTime != null">
+        home_time = #{record.homeTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.shaoTime != null">
+        shao_time = #{record.shaoTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.work != null">
+        work_ = #{record.work,jdbcType=VARCHAR},
+      </if>
+      <if test="record.workCompany != null">
+        work_company = #{record.workCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="record.patent != null">
+        patent_ = #{record.patent,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isDel != null">
+        is_del = #{record.isDel,jdbcType=INTEGER},
+      </if>
+      <if test="record.sort != null">
+        sort_ = #{record.sort,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.remark != null">
+        remark_ = #{record.remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update product_info
+    set id = #{record.id,jdbcType=INTEGER},
+      batch_id = #{record.batchId,jdbcType=INTEGER},
+      batch_name = #{record.batchName,jdbcType=VARCHAR},
+      territory_id = #{record.territoryId,jdbcType=INTEGER},
+      territory_name = #{record.territoryName,jdbcType=VARCHAR},
+      major_field = #{record.majorField,jdbcType=VARCHAR},
+      type_id = #{record.typeId,jdbcType=INTEGER},
+      type_name = #{record.typeName,jdbcType=VARCHAR},
+      product_name = #{record.productName,jdbcType=VARCHAR},
+      user_name = #{record.userName,jdbcType=VARCHAR},
+      mobile_ = #{record.mobile,jdbcType=VARCHAR},
+      email_ = #{record.email,jdbcType=VARCHAR},
+      sex_ = #{record.sex,jdbcType=INTEGER},
+      recommend_ = #{record.recommend,jdbcType=VARCHAR},
+      birthday_ = #{record.birthday,jdbcType=VARCHAR},
+      nationality_ = #{record.nationality,jdbcType=VARCHAR},
+      position_ = #{record.position,jdbcType=VARCHAR},
+      school_name = #{record.schoolName,jdbcType=VARCHAR},
+      major_ = #{record.major,jdbcType=VARCHAR},
+      degree_ = #{record.degree,jdbcType=VARCHAR},
+      work_overseas = #{record.workOverseas,jdbcType=VARCHAR},
+      home_time = #{record.homeTime,jdbcType=VARCHAR},
+      shao_time = #{record.shaoTime,jdbcType=VARCHAR},
+      work_ = #{record.work,jdbcType=VARCHAR},
+      work_company = #{record.workCompany,jdbcType=VARCHAR},
+      patent_ = #{record.patent,jdbcType=VARCHAR},
+      is_del = #{record.isDel,jdbcType=INTEGER},
+      sort_ = #{record.sort,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      remark_ = #{record.remark,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hsmap.yuezhihui.entity.product.ProductInfo">
+    update product_info
+    <set>
+      <if test="batchId != null">
+        batch_id = #{batchId,jdbcType=INTEGER},
+      </if>
+      <if test="batchName != null">
+        batch_name = #{batchName,jdbcType=VARCHAR},
+      </if>
+      <if test="territoryId != null">
+        territory_id = #{territoryId,jdbcType=INTEGER},
+      </if>
+      <if test="territoryName != null">
+        territory_name = #{territoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="majorField != null">
+        major_field = #{majorField,jdbcType=VARCHAR},
+      </if>
+      <if test="typeId != null">
+        type_id = #{typeId,jdbcType=INTEGER},
+      </if>
+      <if test="typeName != null">
+        type_name = #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        mobile_ = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email_ = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex_ = #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="recommend != null">
+        recommend_ = #{recommend,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        birthday_ = #{birthday,jdbcType=VARCHAR},
+      </if>
+      <if test="nationality != null">
+        nationality_ = #{nationality,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null">
+        position_ = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="schoolName != null">
+        school_name = #{schoolName,jdbcType=VARCHAR},
+      </if>
+      <if test="major != null">
+        major_ = #{major,jdbcType=VARCHAR},
+      </if>
+      <if test="degree != null">
+        degree_ = #{degree,jdbcType=VARCHAR},
+      </if>
+      <if test="workOverseas != null">
+        work_overseas = #{workOverseas,jdbcType=VARCHAR},
+      </if>
+      <if test="homeTime != null">
+        home_time = #{homeTime,jdbcType=VARCHAR},
+      </if>
+      <if test="shaoTime != null">
+        shao_time = #{shaoTime,jdbcType=VARCHAR},
+      </if>
+      <if test="work != null">
+        work_ = #{work,jdbcType=VARCHAR},
+      </if>
+      <if test="workCompany != null">
+        work_company = #{workCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="patent != null">
+        patent_ = #{patent,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null">
+        sort_ = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark_ = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hsmap.yuezhihui.entity.product.ProductInfo">
+    update product_info
+    set batch_id = #{batchId,jdbcType=INTEGER},
+      batch_name = #{batchName,jdbcType=VARCHAR},
+      territory_id = #{territoryId,jdbcType=INTEGER},
+      territory_name = #{territoryName,jdbcType=VARCHAR},
+      major_field = #{majorField,jdbcType=VARCHAR},
+      type_id = #{typeId,jdbcType=INTEGER},
+      type_name = #{typeName,jdbcType=VARCHAR},
+      product_name = #{productName,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      mobile_ = #{mobile,jdbcType=VARCHAR},
+      email_ = #{email,jdbcType=VARCHAR},
+      sex_ = #{sex,jdbcType=INTEGER},
+      recommend_ = #{recommend,jdbcType=VARCHAR},
+      birthday_ = #{birthday,jdbcType=VARCHAR},
+      nationality_ = #{nationality,jdbcType=VARCHAR},
+      position_ = #{position,jdbcType=VARCHAR},
+      school_name = #{schoolName,jdbcType=VARCHAR},
+      major_ = #{major,jdbcType=VARCHAR},
+      degree_ = #{degree,jdbcType=VARCHAR},
+      work_overseas = #{workOverseas,jdbcType=VARCHAR},
+      home_time = #{homeTime,jdbcType=VARCHAR},
+      shao_time = #{shaoTime,jdbcType=VARCHAR},
+      work_ = #{work,jdbcType=VARCHAR},
+      work_company = #{workCompany,jdbcType=VARCHAR},
+      patent_ = #{patent,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=INTEGER},
+      sort_ = #{sort,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      remark_ = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+  <!-- 分组下的项目列表 -->
+  <resultMap id="GroupProductMap" type="com.hsmap.yuezhihui.entity.product.GroupProductInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="batch_id" jdbcType="INTEGER" property="batchId" />
+    <result column="batch_name" jdbcType="VARCHAR" property="batchName" />
+    <result column="territory_id" jdbcType="INTEGER" property="territoryId" />
+    <result column="territory_name" jdbcType="VARCHAR" property="territoryName" />
+    <result column="major_field" jdbcType="VARCHAR" property="majorField" />
+    <result column="type_id" jdbcType="INTEGER" property="typeId" />
+    <result column="type_name" jdbcType="VARCHAR" property="typeName" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="mobile_" jdbcType="VARCHAR" property="mobile" />
+    <result column="email_" jdbcType="VARCHAR" property="email" />
+    <result column="sex_" jdbcType="INTEGER" property="sex" />
+    <result column="recommend_" jdbcType="VARCHAR" property="recommend" />
+    <result column="birthday_" jdbcType="VARCHAR" property="birthday" />
+    <result column="nationality_" jdbcType="VARCHAR" property="nationality" />
+    <result column="position_" jdbcType="VARCHAR" property="position" />
+    <result column="school_name" jdbcType="VARCHAR" property="schoolName" />
+    <result column="major_" jdbcType="VARCHAR" property="major" />
+    <result column="degree_" jdbcType="VARCHAR" property="degree" />
+    <result column="work_overseas" jdbcType="VARCHAR" property="workOverseas" />
+    <result column="home_time" jdbcType="VARCHAR" property="homeTime" />
+    <result column="shao_time" jdbcType="VARCHAR" property="shaoTime" />
+    <result column="work_" jdbcType="VARCHAR" property="work" />
+    <result column="work_company" jdbcType="VARCHAR" property="workCompany" />
+    <result column="patent_" jdbcType="VARCHAR" property="patent" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+    <result column="sort_" jdbcType="INTEGER" property="sort" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="remark_" jdbcType="VARCHAR" property="remark" />
+    <result column="group_status" jdbcType="INTEGER" property="groupOfStatus" />
+    <result column="group_sort" jdbcType="INTEGER" property="groupOfSort" />
+    <result column="rp_id" jdbcType="INTEGER" property="reviewProductId" />
+  </resultMap>
+
+  <select id="selectGroupProductInfo" parameterType="com.hsmap.yuezhihui.entity.product.GroupProductInfo" resultMap="GroupProductMap">
+    select
+    a.id, a.batch_id, a.territory_id,  a.major_field, a.type_id,
+    a.product_name, a.user_name, a.mobile_, a.email_, a.sex_, a.recommend_, a.birthday_, a.nationality_,
+    a.position_, a.school_name, a.major_, a.degree_, a.work_overseas, a.home_time, a.shao_time, a.work_,a.work_company,
+    a.patent_, a.is_del, a.sort_, a.create_time, a.remark_, b.name_ as type_name, c.name_ as territory_name, d.name_ as batch_name,
+    p.status_ as group_status,p.sort_ as group_sort,p.id as rp_id
+    from review_product p
+    left join product_info a on p.product_id = a.id
+    left join core_project_type b on a.type_id = b.id
+    left join core_territory c on a.territory_id = c.id
+    left join review_batch d on a.batch_id = d.id
+    <where>
+      p.group_id = #{queryGroupId}
+      <if test="territoryId!=null and territoryId > 0"> and a.territory_id = #{territoryId} </if>
+      <if test="typeId!=null and typeId > 0"> and a.type_id = #{typeId} </if>
+      <if test="userName!=null and userName != ''"> and a.user_name like "%"#{userName}"%" </if>
+    </where>
+    order by p.sort_ asc,a.user_name
+  </select>
+
+  <resultMap id="BaseResultAllMap" type="com.hsmap.yuezhihui.entity.product.ProductInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="batch_id" jdbcType="INTEGER" property="batchId" />
+    <result column="batch_name" jdbcType="VARCHAR" property="batchName" />
+    <result column="territory_id" jdbcType="INTEGER" property="territoryId" />
+    <result column="territory_name" jdbcType="VARCHAR" property="territoryName" />
+    <result column="major_field" jdbcType="VARCHAR" property="majorField" />
+    <result column="type_id" jdbcType="INTEGER" property="typeId" />
+    <result column="type_name" jdbcType="VARCHAR" property="typeName" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="mobile_" jdbcType="VARCHAR" property="mobile" />
+    <result column="email_" jdbcType="VARCHAR" property="email" />
+    <result column="sex_" jdbcType="INTEGER" property="sex" />
+    <result column="recommend_" jdbcType="VARCHAR" property="recommend" />
+    <result column="birthday_" jdbcType="VARCHAR" property="birthday" />
+    <result column="nationality_" jdbcType="VARCHAR" property="nationality" />
+    <result column="position_" jdbcType="VARCHAR" property="position" />
+    <result column="school_name" jdbcType="VARCHAR" property="schoolName" />
+    <result column="major_" jdbcType="VARCHAR" property="major" />
+    <result column="degree_" jdbcType="VARCHAR" property="degree" />
+    <result column="work_overseas" jdbcType="VARCHAR" property="workOverseas" />
+    <result column="home_time" jdbcType="VARCHAR" property="homeTime" />
+    <result column="shao_time" jdbcType="VARCHAR" property="shaoTime" />
+    <result column="work_" jdbcType="VARCHAR" property="work" />
+    <result column="work_company" jdbcType="VARCHAR" property="workCompany" />
+    <result column="patent_" jdbcType="VARCHAR" property="patent" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+    <result column="sort_" jdbcType="INTEGER" property="sort" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="remark_" jdbcType="VARCHAR" property="remark" />
+    <result column="duration_" jdbcType="VARCHAR" property="duration" />
+    <result column="group_sort" jdbcType="INTEGER" property="groupSort" />
+  </resultMap>
+
+  <!-- api product/productList 使用-->
+  <select id="selectProductGroupAll" resultType="java.lang.Integer" resultMap="BaseResultAllMap">
+    select a.*,ifnull(b.duration_,'') duration_ , ifnull(b.sort_,1000) as group_sort from product_info a
+    left join review_product b on a.id = b.product_id
+    where batch_id = #{batchId}
+  </select>
+
+
+</mapper>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+    <head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+        <title>项目调整</title>
+    </head>
+
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row">
+                <form class="layui-form">
+                    <input type="hidden" name="batchId" th:value="${batchId}">
+                    <input type="hidden" name="groupId" th:value="${groupId}">
+                    <input type="hidden" name="reviewProductId" th:value="${reviewProductId}">
+                    <input type="hidden" name="sort" th:value="${sort}">
+
+                    <div class="layui-form-item">
+                        <label for="newGroupId" class="layui-form-label">
+                            <span class="x-red">*</span>评审组
+                        </label>
+                        <div class="layui-input-inline" style="width:400px;">
+                            <select name="newGroupId" id="newGroupId" lay-verify="required" >
+                                <option value="">请选择评审组</option>
+                                <option  th:each="item:${groupList}" th:selected="${item.id} == ${groupId}" th:value="${item.id}" th:text="${item.name}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label for="newSort" class="layui-form-label">
+                            <span class="x-red">*</span>排序号
+                        </label>
+                        <div class="layui-input-inline" style="width:400px;">
+                            <input type="text" id="newSort" name="newSort" lay-verify="required" th:value="${sort}" maxlength="64" autocomplete="2" placeholder="请输入排序号" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label  class="layui-form-label"></label>
+                        <button class="layui-btn" lay-filter="add" lay-submit="">修改</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+        <script>layui.use(['form', 'layer', 'jquery'],
+            function () {
+                $ = layui.jquery;
+                var form = layui.form,layer = layui.layer;
+
+                //自定义验证规则
+                form.verify({});
+
+                //监听提交
+                form.on('submit(add)',
+                    function (data) {
+                        var _submitFlag=true;
+                        if(_submitFlag){
+                            $.ajax({
+                                type: "POST",
+                                url: "/review/group/groupChangeSingleSave",
+                                data:data.field,
+                                dataType:'json',
+                                success:function (data) {
+                                    if (data.code == 0) {
+                                        layui.layer.alert("项目调整成功", { icon: 6 },
+                                            function () {
+                                                xadmin.close();
+                                                if(data.data && data.data=='Y'){
+                                                    parent.loadProductTable();
+                                                }
+                                            });
+                                    } else {
+                                        layer.alert("项目调整失败<br/>"+data.msg, { icon: 2 });
+                                    }
+                                },
+                                error:function (data) {
+                                     layer.alert("提交失败<br/>"+JSON.stringify(data), { icon: 2 });
+                                }
+                            });
+                        }
+                        return false;
+                    });
+
+            });</script>
+
+    </body>
+
+</html>

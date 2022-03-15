@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hsmap.yuezhihui.mapper.review.ReviewRecordMapper">
+  <resultMap id="BaseResultMap" type="com.hsmap.yuezhihui.entity.review.ReviewRecord">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="group_id" jdbcType="INTEGER" property="groupId" />
+    <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+    <result column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+    <result column="rule_id" jdbcType="INTEGER" property="ruleId" />
+    <result column="rule_name" jdbcType="VARCHAR" property="ruleName" />
+    <result column="spce_id" jdbcType="INTEGER" property="spceId" />
+    <result column="spce_name" jdbcType="VARCHAR" property="spceName" />
+    <result column="score_" jdbcType="INTEGER" property="score" />
+    <result column="weight_score" jdbcType="INTEGER" property="weightScore" />
+    <result column="sign_url" jdbcType="VARCHAR" property="signUrl" />
+    <result column="remark_" jdbcType="VARCHAR" property="remark" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+    <result column="sort_" jdbcType="INTEGER" property="sort" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, group_id, group_name, project_id, project_name, rule_id, rule_name, spce_id, 
+    spce_name, score_, weight_score, sign_url, remark_, is_del, sort_, create_time
+  </sql>
+  <select id="selectByExample" parameterType="com.hsmap.yuezhihui.entity.review.ReviewRecordExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from review_record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from review_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from review_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.hsmap.yuezhihui.entity.review.ReviewRecordExample">
+    delete from review_record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.hsmap.yuezhihui.entity.review.ReviewRecord">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into review_record (group_id, group_name, project_id, 
+      project_name, rule_id, rule_name, 
+      spce_id, spce_name, score_, 
+      weight_score, sign_url, remark_, 
+      is_del, sort_, create_time
+      )
+    values (#{groupId,jdbcType=INTEGER}, #{groupName,jdbcType=VARCHAR}, #{projectId,jdbcType=INTEGER}, 
+      #{projectName,jdbcType=VARCHAR}, #{ruleId,jdbcType=INTEGER}, #{ruleName,jdbcType=VARCHAR}, 
+      #{spceId,jdbcType=INTEGER}, #{spceName,jdbcType=VARCHAR}, #{score,jdbcType=INTEGER}, 
+      #{weightScore,jdbcType=INTEGER}, #{signUrl,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{isDel,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hsmap.yuezhihui.entity.review.ReviewRecord">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into review_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="groupId != null">
+        group_id,
+      </if>
+      <if test="groupName != null">
+        group_name,
+      </if>
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="projectName != null">
+        project_name,
+      </if>
+      <if test="ruleId != null">
+        rule_id,
+      </if>
+      <if test="ruleName != null">
+        rule_name,
+      </if>
+      <if test="spceId != null">
+        spce_id,
+      </if>
+      <if test="spceName != null">
+        spce_name,
+      </if>
+      <if test="score != null">
+        score_,
+      </if>
+      <if test="weightScore != null">
+        weight_score,
+      </if>
+      <if test="signUrl != null">
+        sign_url,
+      </if>
+      <if test="remark != null">
+        remark_,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+      <if test="sort != null">
+        sort_,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="groupId != null">
+        #{groupId,jdbcType=INTEGER},
+      </if>
+      <if test="groupName != null">
+        #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null">
+        #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="projectName != null">
+        #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleId != null">
+        #{ruleId,jdbcType=INTEGER},
+      </if>
+      <if test="ruleName != null">
+        #{ruleName,jdbcType=VARCHAR},
+      </if>
+      <if test="spceId != null">
+        #{spceId,jdbcType=INTEGER},
+      </if>
+      <if test="spceName != null">
+        #{spceName,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        #{score,jdbcType=INTEGER},
+      </if>
+      <if test="weightScore != null">
+        #{weightScore,jdbcType=INTEGER},
+      </if>
+      <if test="signUrl != null">
+        #{signUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.hsmap.yuezhihui.entity.review.ReviewRecordExample" resultType="java.lang.Long">
+    select count(*) from review_record
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update review_record
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.groupId != null">
+        group_id = #{record.groupId,jdbcType=INTEGER},
+      </if>
+      <if test="record.groupName != null">
+        group_name = #{record.groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.projectId != null">
+        project_id = #{record.projectId,jdbcType=INTEGER},
+      </if>
+      <if test="record.projectName != null">
+        project_name = #{record.projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ruleId != null">
+        rule_id = #{record.ruleId,jdbcType=INTEGER},
+      </if>
+      <if test="record.ruleName != null">
+        rule_name = #{record.ruleName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.spceId != null">
+        spce_id = #{record.spceId,jdbcType=INTEGER},
+      </if>
+      <if test="record.spceName != null">
+        spce_name = #{record.spceName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.score != null">
+        score_ = #{record.score,jdbcType=INTEGER},
+      </if>
+      <if test="record.weightScore != null">
+        weight_score = #{record.weightScore,jdbcType=INTEGER},
+      </if>
+      <if test="record.signUrl != null">
+        sign_url = #{record.signUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.remark != null">
+        remark_ = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isDel != null">
+        is_del = #{record.isDel,jdbcType=INTEGER},
+      </if>
+      <if test="record.sort != null">
+        sort_ = #{record.sort,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update review_record
+    set id = #{record.id,jdbcType=INTEGER},
+      group_id = #{record.groupId,jdbcType=INTEGER},
+      group_name = #{record.groupName,jdbcType=VARCHAR},
+      project_id = #{record.projectId,jdbcType=INTEGER},
+      project_name = #{record.projectName,jdbcType=VARCHAR},
+      rule_id = #{record.ruleId,jdbcType=INTEGER},
+      rule_name = #{record.ruleName,jdbcType=VARCHAR},
+      spce_id = #{record.spceId,jdbcType=INTEGER},
+      spce_name = #{record.spceName,jdbcType=VARCHAR},
+      score_ = #{record.score,jdbcType=INTEGER},
+      weight_score = #{record.weightScore,jdbcType=INTEGER},
+      sign_url = #{record.signUrl,jdbcType=VARCHAR},
+      remark_ = #{record.remark,jdbcType=VARCHAR},
+      is_del = #{record.isDel,jdbcType=INTEGER},
+      sort_ = #{record.sort,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hsmap.yuezhihui.entity.review.ReviewRecord">
+    update review_record
+    <set>
+      <if test="groupId != null">
+        group_id = #{groupId,jdbcType=INTEGER},
+      </if>
+      <if test="groupName != null">
+        group_name = #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="projectName != null">
+        project_name = #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="ruleId != null">
+        rule_id = #{ruleId,jdbcType=INTEGER},
+      </if>
+      <if test="ruleName != null">
+        rule_name = #{ruleName,jdbcType=VARCHAR},
+      </if>
+      <if test="spceId != null">
+        spce_id = #{spceId,jdbcType=INTEGER},
+      </if>
+      <if test="spceName != null">
+        spce_name = #{spceName,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null">
+        score_ = #{score,jdbcType=INTEGER},
+      </if>
+      <if test="weightScore != null">
+        weight_score = #{weightScore,jdbcType=INTEGER},
+      </if>
+      <if test="signUrl != null">
+        sign_url = #{signUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark_ = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null">
+        sort_ = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hsmap.yuezhihui.entity.review.ReviewRecord">
+    update review_record
+    set group_id = #{groupId,jdbcType=INTEGER},
+      group_name = #{groupName,jdbcType=VARCHAR},
+      project_id = #{projectId,jdbcType=INTEGER},
+      project_name = #{projectName,jdbcType=VARCHAR},
+      rule_id = #{ruleId,jdbcType=INTEGER},
+      rule_name = #{ruleName,jdbcType=VARCHAR},
+      spce_id = #{spceId,jdbcType=INTEGER},
+      spce_name = #{spceName,jdbcType=VARCHAR},
+      score_ = #{score,jdbcType=INTEGER},
+      weight_score = #{weightScore,jdbcType=INTEGER},
+      sign_url = #{signUrl,jdbcType=VARCHAR},
+      remark_ = #{remark,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=INTEGER},
+      sort_ = #{sort,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

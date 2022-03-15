@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<div class="x-nav" th:fragment="child_nav">
+          <span class="layui-breadcrumb">
+            <a href="" th:text="${_PARENT_MENU_NAME}">${_PARENT_MENU_NAME}</a>
+            <a>
+              <cite th:text="${_MENU_NAME}"></cite></a>
+          </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+</div>

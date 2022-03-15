@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<div class="page" th:fragment="pageinfo">
+    <div  th:if="${pageInfo.totalPages} gt 1">
+        <span  class="noborder" style="color: #888;">第[[${pageInfo.number}]]页/共[[${pageInfo.totalPages}]]页</span>
+        <a class="prev" th:if="${pageInfo.number} gt 1 " th:onclick="onpageinfo(1,[[${pageInfo.totalPages}]])" href="javascript:void(0)">|&lt; </a>
+        <a class="prev" th:if="${pageInfo.number} gt 1 " th:onclick="onpageinfo([[${pageInfo.number-1}]],[[${pageInfo.totalPages}]])" href="javascript:void(0)">&lt;&lt; </a>
+        <span class="noborder" th:if="${pageInfo.number} gt 6">
+                                <a th:class="num"  href="javascript:void(0)" th:onclick="onpageinfo([[${pageInfo.number-5}]],[[${pageInfo.totalPages}]])" >...</a>
+                            </span>
+        <span class="noborder" th:each="page:${#numbers.sequence((pageInfo.number gt 5?(pageInfo.number-5):1),(pageInfo.totalPages gt (pageInfo.number+5))?  (pageInfo.number+5):pageInfo.totalPages )}" >
+                            <a th:if="${page} ne ${pageInfo.number}" th:class="num" href="javascript:void(0)"   th:value="${page}" th:text="${page}" th:onclick="onpageinfo([[${page}]],[[${pageInfo.totalPages}]])"></a>
+                            <span th:if="(${page} eq ${pageInfo.number}) " th:text="${page}" class="current">1</span>
+                            </span>
+        <span class="noborder"  th:if="${pageInfo.totalPages} gt 5 and ${pageInfo.totalPages-5} gt ${pageInfo.number}">
+                                <a th:class="num"  href="javascript:void(0)" th:onclick="onpageinfo([[${pageInfo.number+5}]],[[${pageInfo.totalPages}]])" >...</a>
+                            </span>
+        <a class="next" th:if="${pageInfo.number} lt ${pageInfo.totalPages} " th:onclick="onpageinfo([[${pageInfo.number+1}]],[[${pageInfo.totalPages}]])"  href="javascript:void(0)">&gt;&gt;</a>
+        <a class="next" th:if="${pageInfo.number} lt ${pageInfo.totalPages} " th:onclick="onpageinfo([[${pageInfo.totalPages}]],[[${pageInfo.totalPages}]])"  href="javascript:void(0)">&gt;|</a>
+    </div>
+    <script>
+        function onpageinfo(pageNumber,totalNumber) {
+            if(pageNumber<1){
+                pageNumber=1;
+            }
+            if(pageNumber>totalNumber){
+                pageNumber=totalNumber;
+            }
+            $("#pageNumber").val(pageNumber);
+
+            console.log("pageNumber:"+pageNumber)
+
+            $("#from_serach").submit();
+
+
+        };
+
+    </script>
+</div>

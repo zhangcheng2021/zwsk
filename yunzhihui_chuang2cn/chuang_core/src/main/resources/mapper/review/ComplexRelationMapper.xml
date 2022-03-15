@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hsmap.yuezhihui.mapper.review.ComplexRelationMapper">
+    <resultMap id="ComplexRelationProductMap" type="com.hsmap.yuezhihui.entity.review.ComplexRelationProductDo">
+        <!-- review_group -->
+        <result column="rg_id" jdbcType="INTEGER" property="rg_id" />
+        <result column="rg_name_" jdbcType="VARCHAR" property="rg_name_" />
+        <result column="rg_spec_count" jdbcType="INTEGER" property="rg_spec_count" />
+        <result column="rg_product_count" jdbcType="INTEGER" property="rg_product_count" />
+        <result column="rg_address_" jdbcType="VARCHAR" property="rg_address_" />
+        <result column="rg_am_start_time" jdbcType="VARCHAR" property="rg_am_start_time" />
+        <result column="rg_am_end_time" jdbcType="VARCHAR" property="rg_am_end_time" />
+        <result column="rg_pm_start_time" jdbcType="VARCHAR" property="rg_pm_start_time" />
+        <result column="rg_pm_end_time" jdbcType="VARCHAR" property="rg_pm_end_time" />
+        <result column="rg_territory_ids" jdbcType="VARCHAR" property="rg_territory_ids" />
+        <result column="rg_start_" jdbcType="INTEGER" property="rg_start_" />
+        <result column="rg_is_del" jdbcType="INTEGER" property="rg_is_del" />
+        <result column="rg_sort_" jdbcType="INTEGER" property="rg_sort_" />
+        <result column="rg_create_time" jdbcType="TIMESTAMP" property="rg_create_time" />
+        <result column="rg_remark_" jdbcType="VARCHAR" property="rg_remark_" />
+        <result column="rg_batch_id" jdbcType="INTEGER" property="rg_batch_id" />
+        <result column="rg_batch_name" jdbcType="VARCHAR" property="rg_batch_name" />
+        <!-- review_product -->
+        <result column="rp_id" jdbcType="INTEGER" property="rp_id" />
+        <result column="rp_product_id" jdbcType="INTEGER" property="rp_product_id" />
+        <result column="rp_product_name" jdbcType="VARCHAR" property="rp_product_name" />
+        <result column="rp_group_id" jdbcType="INTEGER" property="rp_group_id" />
+        <result column="rp_group_name" jdbcType="VARCHAR" property="rp_group_name" />
+        <result column="rp_rule_id" jdbcType="INTEGER" property="rp_rule_id" />
+        <result column="rp_rule_name" jdbcType="VARCHAR" property="rp_rule_name" />
+        <result column="rp_duration_" jdbcType="VARCHAR" property="rp_duration_" />
+        <result column="rp_spec_count" jdbcType="INTEGER" property="rp_spec_count" />
+        <result column="rp_review_count" jdbcType="INTEGER" property="rp_review_count" />
+        <result column="rp_score_" jdbcType="DOUBLE" property="rp_score_" />
+        <result column="rp_weight_score" jdbcType="INTEGER" property="rp_weight_score" />
+        <result column="rp_ranking_" jdbcType="INTEGER" property="rp_ranking_" />
+        <result column="rp_status_" jdbcType="INTEGER" property="rp_status_" />
+        <result column="rp_is_del" jdbcType="INTEGER" property="rp_is_del" />
+        <result column="rp_sort_" jdbcType="INTEGER" property="rp_sort_" />
+        <result column="rp_create_time" jdbcType="TIMESTAMP" property="rp_create_time" />
+        <result column="rp_remark_" jdbcType="VARCHAR" property="rp_remark_" />
+        <!-- product_info -->
+        <result column="pi_id" jdbcType="INTEGER" property="pi_id" />
+        <result column="pi_batch_id" jdbcType="INTEGER" property="pi_batch_id" />
+        <result column="pi_batch_name" jdbcType="VARCHAR" property="pi_batch_name" />
+        <result column="pi_territory_id" jdbcType="INTEGER" property="pi_territory_id" />
+        <result column="pi_territory_name" jdbcType="VARCHAR" property="pi_territory_name" />
+        <result column="pi_major_field" jdbcType="VARCHAR" property="pi_major_field" />
+        <result column="pi_type_id" jdbcType="INTEGER" property="pi_type_id" />
+        <result column="pi_type_name" jdbcType="VARCHAR" property="pi_type_name" />
+        <result column="pi_product_name" jdbcType="VARCHAR" property="pi_product_name" />
+        <result column="pi_user_name" jdbcType="VARCHAR" property="pi_user_name" />
+        <result column="pi_mobile_" jdbcType="VARCHAR" property="pi_mobile_" />
+        <result column="pi_email_" jdbcType="VARCHAR" property="pi_email_" />
+        <result column="pi_sex_" jdbcType="INTEGER" property="pi_sex_" />
+        <result column="pi_recommend_" jdbcType="VARCHAR" property="pi_recommend_" />
+        <result column="pi_birthday_" jdbcType="VARCHAR" property="pi_birthday_" />
+        <result column="pi_nationality_" jdbcType="VARCHAR" property="pi_nationality_" />
+        <result column="pi_position_" jdbcType="VARCHAR" property="pi_position_" />
+        <result column="pi_school_name" jdbcType="VARCHAR" property="pi_school_name" />
+        <result column="pi_major_" jdbcType="VARCHAR" property="pi_major_" />
+        <result column="pi_degree_" jdbcType="VARCHAR" property="pi_degree_" />
+        <result column="pi_work_overseas" jdbcType="VARCHAR" property="pi_work_overseas" />
+        <result column="pi_home_time" jdbcType="VARCHAR" property="pi_home_time" />
+        <result column="pi_shao_time" jdbcType="VARCHAR" property="pi_shao_time" />
+        <result column="pi_work_" jdbcType="VARCHAR" property="pi_work_" />
+        <result column="pi_work_company" jdbcType="VARCHAR" property="pi_work_company" />
+        <result column="pi_patent_" jdbcType="VARCHAR" property="pi_patent_" />
+        <result column="pi_is_del" jdbcType="INTEGER" property="pi_is_del" />
+        <result column="pi_sort_" jdbcType="INTEGER" property="pi_sort_" />
+        <result column="pi_create_time" jdbcType="TIMESTAMP" property="pi_create_time" />
+        <result column="pi_remark_" jdbcType="VARCHAR" property="pi_remark_" />
+        <!-- core_territory -->
+        <result column="ct_name_" jdbcType="VARCHAR" property="ct_name_" />
+        <!-- core_project_type -->
+        <result column="cpt_name_" jdbcType="VARCHAR" property="cpt_name_" />
+        <!-- review_batch 评审历史查询中使用 -->
+        <result column="rb_name_" jdbcType="VARCHAR" property="rb_name_" />
+    </resultMap>
+
+    <!--  评审分组-项目信息的关联查询 -->
+    <select id="reviewProductInfoByGroupId" parameterType="com.hsmap.yuezhihui.entity.review.ComplexRelationProductDo" resultMap="ComplexRelationProductMap">
+        <![CDATA[
+            SELECT
+            rg.id as rg_id,
+            rg.name_ as rg_name_,
+            rg.spec_count as rg_spec_count,
+            rg.product_count as rg_product_count,
+            rg.address_ as rg_address_,
+            rg.am_start_time as rg_am_start_time,
+            rg.am_end_time as rg_am_end_time,
+            rg.pm_start_time as rg_pm_start_time,
+            rg.pm_end_time as rg_pm_end_time,
+            rg.territory_ids as rg_territory_ids,
+            rg.start_ as rg_start_,
+            rg.is_del as rg_is_del,
+            rg.sort_ as rg_sort_,
+            rg.create_time as rg_create_time,
+            rg.remark_ as rg_remark_,
+            rg.batch_id as rg_batch_id,
+            rg.batch_name as rg_batch_name,
+
+            rp.id as rp_id,
+            rp.product_id as rp_product_id,
+            rp.product_name as rp_product_name,
+            rp.group_id as rp_group_id,
+            rp.group_name as rp_group_name,
+            rp.rule_id as rp_rule_id,
+            rp.rule_name as rp_rule_name,
+            rp.duration_ as rp_duration_,
+            rp.spec_count as rp_spec_count,
+            rp.review_count as rp_review_count,
+            rp.score_ as rp_score_,
+            rp.weight_score as rp_weight_score,
+            rp.ranking_ as rp_ranking_,
+            rp.status_ as rp_status_,
+            rp.is_del as rp_is_del,
+            rp.sort_ as rp_sort_,
+            rp.create_time as rp_create_time,
+            rp.remark_ as rp_remark_,
+
+            pi.id as pi_id,
+            pi.batch_id as pi_batch_id,
+            pi.batch_name as pi_batch_name,
+            pi.territory_id as pi_territory_id,
+            pi.territory_name as pi_territory_name,
+            pi.major_field as pi_major_field,
+            pi.type_id as pi_type_id,
+            pi.type_name as pi_type_name,
+            pi.product_name as pi_product_name,
+            pi.user_name as pi_user_name,
+            pi.mobile_ as pi_mobile_,
+            pi.email_ as pi_email_,
+            pi.sex_ as pi_sex_,
+            pi.recommend_ as pi_recommend_,
+            pi.birthday_ as pi_birthday_,
+            pi.nationality_ as pi_nationality_,
+            pi.position_ as pi_position_,
+            pi.school_name as pi_school_name,
+            pi.major_ as pi_major_,
+            pi.degree_ as pi_degree_,
+            pi.work_overseas as pi_work_overseas,
+            pi.home_time as pi_home_time,
+            pi.shao_time as pi_shao_time,
+            pi.work_company as pi_work_company,
+            pi.patent_ as pi_patent_,
+            pi.is_del as pi_is_del,
+            pi.sort_ as pi_sort_,
+            pi.create_time as pi_create_time,
+            pi.remark_ as pi_remark_,
+
+            ct.name_ as ct_name_,
+            cpt.name_ as cpt_name_
+
+            FROM review_group rg
+            left join review_product rp on rp.group_id = rg.id
+            left join product_info pi on pi.id = rp.product_id
+            left join core_territory ct on pi.territory_id = ct.id
+            left join core_project_type cpt on pi.type_id = cpt.id
+        ]]>
+        <where>
+            rg.is_del=0 and rp.is_del=0 and pi.is_del=0
+            <if test="queryGroupId != null and queryGroupId > 0"> and rg.id = #{queryGroupId}</if>
+            <if test="queryTerritoryId != null and queryTerritoryId > 0"> and ct.id = #{queryTerritoryId}</if>
+            <if test="queryTypeId != null and queryTypeId > 0"> and cpt.id = #{queryTypeId}</if>
+            <if test="queryUserName != null and queryUserName !=''"> and pi.user_name like "%"#{queryUserName}"%"</if>
+        </where>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+        <if test="pageNumber>0">
+            limit ${(pageNumber-1)*pageSize},${pageSize}
+        </if>
+    </select>
+
+
+    <resultMap id="ComplexRelationSpecMap" type="com.hsmap.yuezhihui.entity.review.ComplexRelationSpecDo">
+        <!-- review_group -->
+        <result column="rg_id" jdbcType="INTEGER" property="rg_id" />
+        <result column="rg_name_" jdbcType="VARCHAR" property="rg_name_" />
+        <result column="rg_spec_count" jdbcType="INTEGER" property="rg_spec_count" />
+        <result column="rg_product_count" jdbcType="INTEGER" property="rg_product_count" />
+        <result column="rg_address_" jdbcType="VARCHAR" property="rg_address_" />
+        <result column="rg_am_start_time" jdbcType="INTEGER" property="rg_am_start_time" />
+        <result column="rg_am_end_time" jdbcType="INTEGER" property="rg_am_end_time" />
+        <result column="rg_pm_start_time" jdbcType="INTEGER" property="rg_pm_start_time" />
+        <result column="rg_pm_end_time" jdbcType="INTEGER" property="rg_pm_end_time" />
+        <result column="rg_territory_ids" jdbcType="VARCHAR" property="rg_territory_ids" />
+        <result column="rg_start_" jdbcType="INTEGER" property="rg_start_" />
+        <result column="rg_is_del" jdbcType="INTEGER" property="rg_is_del" />
+        <result column="rg_sort_" jdbcType="INTEGER" property="rg_sort_" />
+        <result column="rg_create_time" jdbcType="TIMESTAMP" property="rg_create_time" />
+        <result column="rg_remark_" jdbcType="VARCHAR" property="rg_remark_" />
+        <result column="rg_batch_id" jdbcType="INTEGER" property="rg_batch_id" />
+        <result column="rg_batch_name" jdbcType="VARCHAR" property="rg_batch_name" />
+        <!-- review_specialist -->
+        <result column="rs_id" jdbcType="INTEGER" property="rs_id" />
+        <result column="rs_group_id" jdbcType="INTEGER" property="rs_group_id" />
+        <result column="rs_group_name" jdbcType="VARCHAR" property="rs_group_name" />
+        <result column="rs_spec_id" jdbcType="INTEGER" property="rs_spec_id" />
+        <result column="rs_spec_name" jdbcType="VARCHAR" property="rs_spec_name" />
+        <result column="rs_product_count" jdbcType="INTEGER" property="rs_product_count" />
+        <result column="rs_review_count" jdbcType="INTEGER" property="rs_review_count" />
+        <result column="rs_status_" jdbcType="INTEGER" property="rs_status_" />
+        <result column="rs_is_del" jdbcType="INTEGER" property="rs_is_del" />
+        <result column="rs_sort_" jdbcType="INTEGER" property="rs_sort_" />
+        <result column="rs_create_time" jdbcType="TIMESTAMP" property="rs_create_time" />
+        <result column="rs_remark_" jdbcType="VARCHAR" property="rs_remark_" />
+        <!-- spec_info -->
+        <result column="si_id" jdbcType="INTEGER" property="si_id" />
+        <result column="si_user_name" jdbcType="VARCHAR" property="si_user_name" />
+        <result column="si_mobile_" jdbcType="VARCHAR" property="si_mobile_" />
+        <result column="si_age_" jdbcType="VARCHAR" property="si_age_" />
+        <result column="si_sex_" jdbcType="INTEGER" property="si_sex_" />
+        <result column="si_company_" jdbcType="VARCHAR" property="si_company_" />
+        <result column="si_rank_" jdbcType="VARCHAR" property="si_rank_" />
+        <result column="si_title_id" jdbcType="INTEGER" property="si_title_id" />
+        <result column="si_title_name" jdbcType="VARCHAR" property="si_title_name" />
+        <result column="si_territory_id" jdbcType="INTEGER" property="si_territory_id" />
+        <result column="si_territory_name" jdbcType="VARCHAR" property="si_territory_name" />
+        <result column="si_spec_type_id" jdbcType="INTEGER" property="si_spec_type_id" />
+        <result column="si_spec_type_name" jdbcType="VARCHAR" property="si_spec_type_name" />
+        <result column="si_subdivision_" jdbcType="VARCHAR" property="si_subdivision_" />
+        <result column="si_level_" jdbcType="INTEGER" property="si_level_" />
+        <result column="si_is_del" jdbcType="INTEGER" property="si_is_del" />
+        <result column="si_sort_" jdbcType="INTEGER" property="si_sort_" />
+        <result column="si_create_time" jdbcType="TIMESTAMP" property="si_create_time" />
+        <result column="si_remark_" jdbcType="VARCHAR" property="si_remark_" />
+        <result column="si_card_name" jdbcType="VARCHAR" property="si_card_name" />
+        <result column="si_identity_no" jdbcType="VARCHAR" property="si_identity_no" />
+        <result column="si_bank_name" jdbcType="VARCHAR" property="si_bank_name" />
+        <result column="si_card_no" jdbcType="VARCHAR" property="si_card_no" />
+        <!-- core_territory -->
+        <result column="ct_name_" jdbcType="VARCHAR" property="ct_name_" />
+        <!-- core_spec_type -->
+        <result column="cst_name_" jdbcType="VARCHAR" property="cst_name_" />
+        <!-- core_title -->
+        <result column="cti_name_" jdbcType="VARCHAR" property="cti_name_" />
+    </resultMap>
+
+    <!--  评审分组-专家信息的关联查询 -->
+    <select id="reviewSpecInfoByGroupId" parameterType="com.hsmap.yuezhihui.entity.review.ComplexRelationSpecDo" resultMap="ComplexRelationSpecMap">
+        <![CDATA[
+            SELECT
+            rg.id as rg_id,
+            rg.name_ as rg_name_,
+            rg.spec_count as rg_spec_count,
+            rg.product_count as rg_product_count,
+            rg.address_ as rg_address_,
+            rg.am_start_time as rg_am_start_time,
+            rg.am_end_time as rg_am_end_time,
+            rg.pm_start_time as rg_pm_start_time,
+            rg.pm_end_time as rg_pm_end_time,
+            rg.territory_ids as rg_territory_ids,
+            rg.start_ as rg_start_,
+            rg.is_del as rg_is_del,
+            rg.sort_ as rg_sort_,
+            rg.create_time as rg_create_time,
+            rg.remark_ as rg_remark_,
+            rg.batch_id as rg_batch_id,
+            rg.batch_name as rg_batch_name,
+            rs.id as rs_id,
+            rs.group_id as rs_group_id,
+            rs.group_name as rs_group_name,
+            rs.spec_id as rs_spec_id,
+            rs.spec_name as rs_spec_name,
+            rs.product_count as rs_product_count,
+            rs.review_count as rs_review_count,
+            rs.status_ as rs_status_,
+            rs.is_del as rs_is_del,
+            rs.sort_ as rs_sort_,
+            rs.create_time as rs_create_time,
+            rs.remark_ as rs_remark_,
+            si.id as si_id,
+            si.user_name as si_user_name,
+            si.mobile_ as si_mobile_,
+            si.age_ as si_age_,
+            si.sex_ as si_sex_,
+            si.company_ as si_company_,
+            si.rank_ as si_rank_,
+            si.title_id as si_title_id,
+            si.title_name as si_title_name,
+            si.territory_id as si_territory_id,
+            si.territory_name as si_territory_name,
+            si.spec_type_id as si_spec_type_id,
+            si.spec_type_name as si_spec_type_name,
+            si.subdivision_ as si_subdivision_,
+            si.level_ as si_level_,
+            si.is_del as si_is_del,
+            si.sort_ as si_sort_,
+            si.create_time as si_create_time,
+            si.remark_ as si_remark_,
+            si.card_name as si_card_name,
+            si.identity_no as si_identity_no,
+            si.bank_name as si_bank_name,
+            si.card_no as si_card_no,
+            ct.name_ as ct_name_,
+            cst.name_ as cst_name_,
+            cti.name_ as cti_name_
+            FROM review_group rg
+            left join review_specialist rs on rs.group_id = rg.id
+            left join spec_info si on si.id = rs.spec_id
+            left join core_territory ct on si.territory_id = ct.id
+            left join core_spec_type cst on si.spec_type_id = cst.id
+            left join core_title cti on si.title_id = cti.id
+            where rg.is_del=0 and rs.is_del=0 and si.is_del=0
+            and rg.id = #{queryGroupId}
+        ]]>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+        <if test="pageNumber>0">
+            limit ${(pageNumber-1)*pageSize},${pageSize}
+        </if>
+    </select>
+
+    <!--  历史评审-项目信息 关联查询 -->
+    <select id="reviewHisProductInfo" parameterType="com.hsmap.yuezhihui.entity.review.ComplexRelationProductDo" resultMap="ComplexRelationProductMap">
+        <![CDATA[
+            SELECT
+            rg.id as rg_id,
+            rg.name_ as rg_name_,
+            rg.spec_count as rg_spec_count,
+            rg.product_count as rg_product_count,
+            rg.address_ as rg_address_,
+            rg.am_start_time as rg_am_start_time,
+            rg.am_end_time as rg_am_end_time,
+            rg.pm_start_time as rg_pm_start_time,
+            rg.pm_end_time as rg_pm_end_time,
+            rg.territory_ids as rg_territory_ids,
+            rg.start_ as rg_start_,
+
+            rp.id as rp_id,
+            rp.product_id as rp_product_id,
+            rp.product_name as rp_product_name,
+            rp.group_id as rp_group_id,
+            rp.group_name as rp_group_name,
+            rp.rule_id as rp_rule_id,
+            rp.rule_name as rp_rule_name,
+            rp.duration_ as rp_duration_,
+            rp.spec_count as rp_spec_count,
+            rp.review_count as rp_review_count,
+            rp.score_ as rp_score_,
+            rp.weight_score as rp_weight_score,
+            rp.ranking_ as rp_ranking_,
+            rp.status_ as rp_status_,
+            rp.sort_ as rp_sort_,
+            rp.create_time as rp_create_time,
+            rp.remark_ as rp_remark_,
+
+            pi.id as pi_id,
+            pi.batch_id as pi_batch_id,
+            pi.batch_name as pi_batch_name,
+            pi.territory_id as pi_territory_id,
+            pi.territory_name as pi_territory_name,
+            pi.major_field as pi_major_field,
+            pi.type_id as pi_type_id,
+            pi.type_name as pi_type_name,
+            pi.product_name as pi_product_name,
+            pi.user_name as pi_user_name,
+            pi.mobile_ as pi_mobile_,
+            pi.email_ as pi_email_,
+            pi.sex_ as pi_sex_,
+            pi.recommend_ as pi_recommend_,
+            pi.birthday_ as pi_birthday_,
+            pi.nationality_ as pi_nationality_,
+            pi.position_ as pi_position_,
+            pi.school_name as pi_school_name,
+            pi.major_ as pi_major_,
+            pi.degree_ as pi_degree_,
+            pi.work_overseas as pi_work_overseas,
+            pi.home_time as pi_home_time,
+            pi.shao_time as pi_shao_time,
+            pi.work_company as pi_work_company,
+            pi.patent_ as pi_patent_,
+            pi.create_time as pi_create_time,
+            pi.remark_ as pi_remark_,
+
+            ct.name_ as ct_name_,
+            cpt.name_ as cpt_name_,
+            rb.name_ as rb_name_
+            FROM review_product rp
+            left join review_group rg on rp.group_id = rg.id
+            left join product_info pi on pi.id = rp.product_id
+            left join core_territory ct on pi.territory_id = ct.id
+            left join core_project_type cpt on pi.type_id = cpt.id
+            left join review_batch rb on pi.batch_id = rb.id
+        ]]>
+        <where>
+            rg.is_del=0 and rp.is_del=0 and pi.is_del=0
+            <if test="queryProductReViewStatus != null"> and rp.status_ = #{queryProductReViewStatus}</if>
+            <if test="queryProductId != null and queryProductId > 0"> and pi.id = #{queryProductId}</if>
+            <if test="queryGroupId != null and queryGroupId > 0"> and rg.id = #{queryGroupId}</if>
+            <if test="queryBatchId != null and queryBatchId > 0"> and rb.id = #{queryBatchId}</if>
+            <if test="queryTerritoryId != null and queryTerritoryId > 0"> and ct.id = #{queryTerritoryId}</if>
+            <if test="queryTypeId != null and queryTypeId > 0"> and cpt.id = #{queryTypeId}</if>
+            <if test="queryUserName != null and queryUserName !=''"> and pi.user_name like "%"#{queryUserName}"%"</if>
+            <if test="queryProductName != null and queryProductName !=''"> and pi.product_name like "%"#{queryProductName}"%"</if>
+        </where>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+        <if test="pageNumber>0">
+            limit ${(pageNumber-1)*pageSize},${pageSize}
+        </if>
+    </select>
+    <!--  历史评审-项目信息 关联查询Count -->
+    <select id="reviewHisProductInfoCount" parameterType="com.hsmap.yuezhihui.entity.review.ComplexRelationProductDo" resultType="java.lang.Integer">
+        <![CDATA[
+            SELECT COUNT(1)
+            FROM review_product rp
+            left join review_group rg on rp.group_id = rg.id
+            left join product_info pi on pi.id = rp.product_id
+            left join core_territory ct on pi.territory_id = ct.id
+            left join core_project_type cpt on pi.type_id = cpt.id
+            left join review_batch rb on pi.batch_id = rb.id
+        ]]>
+        <where>
+            rg.is_del=0 and rp.is_del=0 and pi.is_del=0
+            <if test="queryProductReViewStatus != null"> and rp.status_ = #{queryProductReViewStatus}</if>
+            <if test="queryGroupId != null and queryGroupId > 0"> and rg.id = #{queryGroupId}</if>
+            <if test="queryBatchId != null and queryBatchId > 0"> and rb.id = #{queryBatchId}</if>
+            <if test="queryTerritoryId != null and queryTerritoryId > 0"> and ct.id = #{queryTerritoryId}</if>
+            <if test="queryTypeId != null and queryTypeId > 0"> and cpt.id = #{queryTypeId}</if>
+            <if test="queryUserName != null and queryUserName !=''"> and pi.user_name like "%"#{queryUserName}"%"</if>
+            <if test="queryProductName != null and queryProductName !=''"> and pi.product_name like "%"#{queryProductName}"%"</if>
+        </where>
+    </select>
+
+    <!-- 项目已经审核过的专家列表，由于是已经审核完成的数据，所有专家都是已经存在数据的 -->
+    <resultMap id="SpecInfoMap" type="com.hsmap.yuezhihui.entity.spec.SpecInfo">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="user_name" jdbcType="VARCHAR" property="userName" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="remark_" jdbcType="VARCHAR" property="remark" />
+        <result column="sign_url" jdbcType="VARCHAR" property="signUrl" />
+        <result column="score_" jdbcType="INTEGER" property="recordScore" />
+    </resultMap>
+    <select id="productSpecListById" parameterType="java.lang.Integer" resultMap="SpecInfoMap">
+        <![CDATA[
+            select
+            si.id, si.user_name
+            from review_record rr
+            left join spec_info si on rr.spce_id = si.id
+            where rr.project_id = #{productId} and si.id is not null
+            order by si.level_ desc , si.user_name asc
+        ]]>
+    </select>
+    <!-- 查询专家的评论、时间、签名信息 -->
+    <select id="productSpecInfoById" resultMap="SpecInfoMap">
+        <![CDATA[
+            select
+            si.id, si.user_name, rr.sign_url,
+            rr.remark_, rr.create_time, rr.score_
+            from review_record rr
+            left join spec_info si on rr.spce_id = si.id
+            where rr.project_id = #{productId} and rr.spce_id = #{specId}
+            order by si.level_ desc , si.user_name asc
+        ]]>
+    </select>
+
+    <resultMap id="DetailInfoMap" type="com.hsmap.yuezhihui.entity.review.ReviewRecordDetail">
+        <result column="type_" jdbcType="VARCHAR" property="ruleName" />
+        <result column="content_" jdbcType="VARCHAR" property="ruleDetailName" />
+        <result column="score_" jdbcType="INTEGER" property="score" />
+    </resultMap>
+    <!-- 查询专家对项目的各评审项分数-->
+    <select id="productSpecScoreListById" resultMap="DetailInfoMap">
+        <![CDATA[
+        select rud.type_,rud.content_,rrd.score_ from review_record rr
+        left join review_record_detail rrd on rrd.record_id = rr.id
+        left join review_rule_detail rud on rud.rule_id = rr.rule_id and rrd.rule_detail_id = rud.id
+        where rr.project_id = #{productId} and rr.spce_id = #{specId}
+        order by rud.sort_ desc, rud.id
+         ]]>
+    </select>
+
+    <!-- 查询项目评分规则 -->
+    <select id="productScoreListById" resultMap="DetailInfoMap">
+        <![CDATA[
+        select rrd.type_,rrd.content_ from review_product rp
+        left join review_rule rr on rp.rule_id = rr.id
+        left join review_rule_detail rrd on rrd.rule_id = rr.id
+        where rp.product_id = #{productId} and rrd.is_del = 0
+        order by rrd.sort_ desc, rrd.id
+         ]]>
+    </select>
+
+    <!-- 查询项目被专家审核的情况 -->
+    <resultMap id="ComplexProductReviewedMap" type="com.hsmap.yuezhihui.entity.review.ComplexProductReviewed">
+        <result column="spec_id" jdbcType="INTEGER" property="specId" />
+        <result column="score_" jdbcType="INTEGER" property="score" />
+    </resultMap>
+    <select id="selectProductReviewed" resultMap="ComplexProductReviewedMap">
+        select c.spec_id,d.score_ from review_product a
+        left join review_group b on a.group_id = b.id
+        left join review_specialist c on b.id = c.group_id
+        left join review_record d on a.product_id = d.project_id and d.spce_id = c.spec_id
+        where a.product_id = #{productId} and c.is_del = 0
+    </select>
+
+
+    <resultMap id="ComplexGPSDoMap" type="com.hsmap.yuezhihui.entity.review.ComplexGPSDo">
+        <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+        <result column="user_id" jdbcType="INTEGER" property="userId" />
+        <result column="user_name" jdbcType="VARCHAR" property="userName" />
+        <result column="product_name" jdbcType="VARCHAR" property="productName" />
+        <result column="type_name" jdbcType="VARCHAR" property="typeName" />
+        <result column="recommend_" jdbcType="VARCHAR" property="recommend" />
+        <result column="spec_id" jdbcType="INTEGER" property="specId" />
+        <result column="spec_name" jdbcType="VARCHAR" property="specName" />
+        <result column="score_" jdbcType="INTEGER" property="score" />
+        <result column="remark_" jdbcType="VARCHAR" property="specRemark" />
+    </resultMap>
+    <!-- 获取组-用户-专家的数据报表 -->
+    <select id="selectGPSExportInfo" parameterType="java.lang.Integer" resultMap="ComplexGPSDoMap">
+        select a.name_ as group_name,pi.id as user_id,pi.user_name,pi.product_name,cpt.name_ as type_name,
+        pi.recommend_,si.id as spec_id,si.user_name as spec_name,rr.score_,rr.remark_
+        from review_group a
+        left join review_product b on a.id = b.group_id
+        left join review_specialist c on a.id = c.group_id
+        left join product_info pi on b.product_id = pi.id
+        left join core_project_type cpt on pi.type_id = cpt.id
+        left join spec_info si on si.id = c.spec_id
+        left join review_record rr on rr.group_id = a.id and rr.spce_id = si.id and rr.project_id = pi.id
+        where a.id = #{groupId} and c.is_del = 0 and pi.is_del = 0
+        order by b.id asc,si.id asc
+    </select>
+
+
+    <resultMap id="ComplexReviewResultDoMap" type="com.hsmap.yuezhihui.entity.review.ComplexReviewResultDo">
+        <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+        <result column="count_all" jdbcType="INTEGER" property="countAll" />
+        <result column="count_a" jdbcType="INTEGER" property="countA" />
+        <result column="count_b" jdbcType="INTEGER" property="countB" />
+        <result column="count_c" jdbcType="INTEGER" property="countC" />
+        <result column="count_no" jdbcType="INTEGER" property="countNo" />
+    </resultMap>
+    <select  id="selectReviewResultExportInfo" resultMap="ComplexReviewResultDoMap">
+        <![CDATA[
+        select
+        x.name_ as group_name,
+        sum(if(x.has is not null,1,0)) as count_all,
+        sum(if(x.has is not null and x.score_>=85,1,0)) as count_a,
+        sum(if(x.has is not null and x.score_< 85 and x.score_>=75,1,0)) as count_b,
+        sum(if(x.has is not null and x.score_< 75 and x.score_>=65,1,0)) as count_c,
+        sum(if(x.has is not null and x.score_< 65,1,0)) as count_no
+        from (
+        select a.name_,
+        b.score_,pi.id as has
+        from review_group a
+        left join review_product b on a.id = b.group_id
+        left join product_info pi on b.product_id = pi.id
+        ]]>
+        <!-- 查团队 -->
+        <if test="team == 1">
+            and pi.type_id in (select id from core_project_type where name_ like '%团队%')
+        </if>
+        <!-- 查个人 -->
+        <if test="team == 0">
+            and pi.type_id in (select id from core_project_type where name_ not like '%团队%')
+        </if>
+        <![CDATA[
+        where a.batch_id = #{batchId}
+        ) x group by x.name_
+        ]]>
+    </select>
+
+
+    <resultMap id="ComplexRecommendDoMap" type="com.hsmap.yuezhihui.entity.review.ComplexRecommendDo">
+        <result column="recommend_" jdbcType="VARCHAR" property="recommendName" />
+        <result column="count_all" jdbcType="INTEGER" property="countAll" />
+        <result column="count_a" jdbcType="INTEGER" property="countA" />
+        <result column="count_b" jdbcType="INTEGER" property="countB" />
+        <result column="count_c" jdbcType="INTEGER" property="countC" />
+        <result column="count_no" jdbcType="INTEGER" property="countNo" />
+    </resultMap>
+    <select id="selectRecommendExportInfo" resultMap="ComplexRecommendDoMap">
+        <![CDATA[
+        select alls.recommend_,
+        ifnull(items.count_all,0) as count_all,
+        ifnull(items.count_a,0) as count_a,
+        ifnull(items.count_b,0) as count_b,
+        ifnull(items.count_c,0) as count_c,
+        ifnull(items.count_no,0) as count_no
+        from
+        (	select recommend_ from product_info group by recommend_) alls
+        left join (
+        select x.recommend_,
+        sum(if(x.has is not null,1,0)) as count_all,
+        sum(if(x.has is not null and x.score_>=85,1,0)) as count_a,
+        sum(if(x.has is not null and x.score_< 85 and x.score_>=75,1,0)) as count_b,
+        sum(if(x.has is not null and x.score_< 75 and x.score_>=65,1,0)) as count_c,
+        sum(if(x.has is not null and x.score_<65,1,0)) as count_no
+        from (
+        select pi.recommend_, b.score_,pi.id as has
+        from review_product b left join product_info pi on b.product_id = pi.id
+        ]]>
+        <!-- 查团队 -->
+        <if test="team == 1">
+            and pi.type_id in (select id from core_project_type where name_ like '%团队%')
+        </if>
+        <!-- 查个人 -->
+        <if test="team == 0">
+            and pi.type_id in (select id from core_project_type where name_ not like '%团队%')
+        </if>
+        <![CDATA[
+        where pi.batch_id = #{batchId} ) x group by x.recommend_  ) items on alls.recommend_ = items.recommend_
+        ]]>
+    </select>
+
+</mapper>

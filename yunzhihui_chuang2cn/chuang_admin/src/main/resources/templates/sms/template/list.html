@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+    <title>短信模板管理</title>
+</head>
+
+<body>
+<div th:replace="common/child_nav :: child_nav">
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    <!--                    <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>-->
+                    <button class="layui-btn" th:onclick="addInput()"><i class="layui-icon"></i>添加</button>
+                </div>
+                <div class="layui-card-body layui-table-body layui-table-main">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr>
+<!--                            <th>-->
+<!--                                <input type="checkbox" lay-filter="checkall" name="" lay-skin="primary">-->
+<!--                            </th>-->
+                            <th>序号</th>
+                            <th>模板代码</th>
+                            <th>模板名称</th>
+                            <th>模板内容</th>
+                            <th>创建时间</th>
+                            <th>操作</th></tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="info,stat:${pageInfo.content}">
+<!--                            <td>-->
+<!--                                <input type="checkbox" name="id" value="1"   lay-skin="primary">-->
+<!--                            </td>-->
+                            <td th:text="${stat.count}">0</td>
+                            <td th:text="${info.code}"></td>
+                            <td th:text="${info.name}"></td>
+                            <td th:text="${info.content}"></td>
+                            <td th:text="${#dates.format(info.createTime,'yyyy-MM-dd')}"></td>
+
+                            <td class="td-manage">
+                                <a title="编辑"  th:if="${info.status eq 0}" th:onclick="editInput([[${info.id}]])" href="javascript:;">
+                                    <i class="layui-icon">&#xe642;</i>编辑
+                                </a>
+                                <a title="删除" th:if="${info.status eq 0}" th:onclick="black_del([[${info.id}]])" href="javascript:void(0);">
+                                    <i class="layui-icon">&#xe640;</i>删除
+                                </a>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-body ">
+                    <div class="page">
+                        <div th:replace="common/pageinfo :: pageinfo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['laydate','form'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+        var $ = layui.jquery;
+        // 监听全选
+        form.on('checkbox(checkall)', function(data){
+
+            if(data.elem.checked){
+                $('tbody input').prop('checked',true);
+            }else{
+                $('tbody input').prop('checked',false);
+            }
+            form.render('checkbox');
+        });
+
+        form.on('submit(sreach)', function (data) {
+            console.log("sreach.....");
+
+            //form.submit();
+            $("#pageNumber").val(1);
+            $("#from_serach").submit();
+            return false;
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#start' //指定元素
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#end' //指定元素
+        });
+
+
+
+    });
+
+    function onpage(pageNumber) {
+        $("#pageNumber").val(pageNumber);
+        console.log("pageNumber:"+pageNumber)
+
+        $("#from_serach").submit();
+
+
+    };
+
+
+
+
+    function editInput(id) {
+        xadmin.open('编辑短信模板','./editInput?id='+id,500,480);
+
+    }
+
+    function addInput(status) {
+        // xadmin.open('编辑菜单','./editInput?id='+id,600,400);
+        $name = "添加短信模板";
+
+        xadmin.open($name,'./addInput',500,480);
+
+    }
+
+
+    // $("#from_serach").onclick(function(){
+    //     $("#from_serach").submit();
+    //
+    // });
+
+
+    /*-删除*/
+    function black_del(id){
+        layer.confirm('确认要删除吗？',function(index){
+            $.ajax({
+                type: "POST",
+                url: "./delete",
+                data:{id:id,status:status},
+                dataType:'json',
+                success:function (data) {
+                    console.log("data->code:"+data.code);
+                    if (data.code == 0) {
+
+                        layui.layer.alert("删除成功", {
+                                icon: 6
+                            },
+                            function () {
+                                // 进行刷新
+                                location.reload();
+                            });
+                    } else {
+                        layer.alert("删除失败", {
+                                icon: 2
+                            });
+                    }
+                },
+                error:function (data) {
+                    alert("提交失败"+JSON.stringify(data));
+                }
+            });
+            return false;
+        });
+    }
+</script>
+</html>

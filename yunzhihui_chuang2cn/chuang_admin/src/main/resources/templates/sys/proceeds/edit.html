@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+    <title>申请提现</title>
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+
+            <div class="layui-form-item">
+                <label for="payType" class="layui-form-label"  >
+                    收款名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="name" name="name" required=""
+                           th:value="${model.name}"
+                           autocomplete="off" placeholder="请输入收款名称" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="payType" class="layui-form-label"  >
+                    收款方式
+                </label>
+                <div class="layui-input-inline">
+                    <select name="payType" id="payType" lay-filter="payType" lay-verify="select_verify">
+                        <option th:value="-1" th:text="请选择收款方式"></option>
+                        <option th:selected="${model.payType} eq ${status.key}"  th:each="status:${payTypeMap}" th:value="${status.key}" th:text="${status.value}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="div_pay_type" id="pay_id_1">
+                <div class="layui-form-item">
+                    <label for="bankUserName" class="layui-form-label">
+                        收款人姓名
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="bankUserName" name="bankUserName" required=""
+                               th:value="${model.bankUserName}"
+                               autocomplete="off" placeholder="请输入收款人姓名" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="bankCard" class="layui-form-label">
+                        银行卡号
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="bankCard" name="bankCard" required=""
+                               th:value="${model.bankCard}"
+                               autocomplete="off" placeholder="请输入银行卡号" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="bankName" class="layui-form-label">
+                        收款银行
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="bankName" name="bankName" required=""
+                               th:value="${model.bankName}"
+                               autocomplete="off" placeholder="请输入收款银行" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="bankDeposit" class="layui-form-label">
+                        开户行
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="bankDeposit" name="bankDeposit" required=""
+                               th:value="${model.bankDeposit}"
+                               autocomplete="off" placeholder="请输入开户行" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="div_pay_type" id="pay_id_2">
+                <div class="layui-form-item">
+                    <label for="alipayAccount" class="layui-form-label">
+                        支付宝帐号
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="alipayAccount" name="alipayAccount" required=""
+                               th:value="${model.alipayAccount}"
+                               autocomplete="off" placeholder="请输入支付宝帐号" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="div_pay_type" id="pay_id_3">
+                <div class="layui-form-item">
+                    <label for="alipayAccount" class="layui-form-label">
+                        微信帐号
+                    </label>
+                    <div class="layui-input-inline">
+                        <input type="text" id="wechatAccount" name="wechatAccount" required="" th:value="${model.wechatAccount}"
+                               autocomplete="off" placeholder="请输入支付宝帐号" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="div_pay_type" id="pay_id_4">
+                <div class="layui-form-item">
+                    <label for="alipayAccount" class="layui-form-label">
+                        收款码
+                    </label>
+                    <div class="layui-input-inline">
+                        <button type="button" class="layui-btn" id="myfiles">
+                            <i class="layui-icon">&#xe67c;</i>上传收款码
+                        </button>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label for="view_img" class="layui-form-label">
+                        <span class="x-red"></span>
+                    </label>
+                    <div class="layui-input-inline">
+                        <img th:src="@{{dom}{imgurl}(dom=${_SYS_IMAGES_DOMAIN},imgurl=${model.collectionImg})}" width="300" id="view_img">
+                    </div>
+                </div>
+            </div>
+<!--            <div class="layui-form-item">-->
+<!--                <label for="mobile" class="layui-form-label">-->
+<!--                    联系电话-->
+<!--                </label>-->
+<!--                <div class="layui-input-inline">-->
+<!--                    <input type="text" id="mobile" name="mobile" required=""-->
+<!--                           autocomplete="off" placeholder="请输入联系电话" class="layui-input">-->
+<!--                </div>-->
+<!--            </div>-->
+            <div class="layui-form-item">
+                <label for="remark" class="layui-form-label">
+                    备注
+                </label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" id="remark" name="remark" class="layui-textarea" th:value="${model.remark}"  th:text="${model.remark}"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="remark" class="layui-form-label"></label>
+                <input type="hidden" id="collectionImg" name="collectionImg" th:value="${model.collectionImg}">
+                <input type="hidden" id="id" name="id" th:value="${model.id}">
+                <button class="layui-btn" lay-filter="add" lay-submit="">修改</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var payType = /*[[${model.payType}]]*/ null;
+    /*]]>*/
+    layui.use(['form', 'layer', 'jquery'],
+    function () {
+
+        $(".div_pay_type").hide();
+        $("#pay_id_"+payType).show();
+        $ = layui.jquery;
+        var form = layui.form,
+            layer = layui.layer;
+
+        $("#view_img").show();
+
+        //自定义验证规则
+        form.verify({
+            select_verify: function (value) {
+                if (value<0) {
+                    return '请选择收款方式';
+                }
+            },amount_verify:function(value){
+                if (value<100) {
+                    return '提现金额不能少于100元';
+                }
+                if(value>amount){
+                    return '提现金额大于可提现金额';
+                }
+
+            }
+        });
+
+
+        form.on('select(payType)', function(data){
+            console.log("data ---->"+data.value);
+            $(".div_pay_type").hide();
+            $("#pay_id_"+data.value).show();
+        });
+
+
+        layui.use('upload', function(){
+            var upload = layui.upload;
+
+            //执行实例
+            var uploadInst = upload.render({
+                elem: '#myfiles' //绑定元素
+                ,url: '../../images/uploadImg' //上传接口
+                ,accept:"images",
+                data:{"status":"banner"}
+                ,done: function(res){
+                    //上传完毕回调
+                    //alert(res.msg);
+                    console.log("src:"+res.data.src)
+                    console.log("path:"+res.data.path)
+                    $("#view_img").attr('src',res.data.src);
+                    $("#view_img").show();
+                    $("#collectionImg").val(res.data.path);
+                }
+                ,error: function(){
+                    //请求异常回调
+                    alert(res.msg);
+                }
+            });
+        });
+
+
+
+        //监听提交
+        form.on('submit(add)',
+            function (data) {
+                console.log(data);
+                console.log(data.field);
+                //发异步，把数据提交给php
+
+
+                $.ajax({
+                    type: "POST",
+                    url: "./edit",
+                    data:JSON.stringify(data.field),
+                    headers : {"content-type" : "application/json;charset=UTF-8"},
+                    dataType:'json',
+                    //contentType : "application/json;charsetset=UTF-8",
+                    success:function (data) {
+                        console.log("data->code:"+data.code);
+                        if (data.code == 0) {
+                            layui.layer.alert("修改成功", {
+                                    icon: 6
+                                },
+                                function () {
+                                    //关闭当前frame
+                                    xadmin.close();
+                                    // 可以对父窗口进行刷新
+                                    xadmin.father_reload();
+                                });
+
+                            console.log("购买成功。。。。。111");
+                            // return true;
+
+                        } else {
+                            layer.alert("修改失败<br/>"+data.msg, {
+                                    icon: 2
+                                }
+                            );
+                            //
+                        }
+                    },
+                    error:function (data) {
+                        alert("提交失败"+JSON.stringify(data));
+                    }
+                });
+
+                return false;
+            });
+
+    });
+
+
+
+
+</script>
+
+</body>
+
+</html>

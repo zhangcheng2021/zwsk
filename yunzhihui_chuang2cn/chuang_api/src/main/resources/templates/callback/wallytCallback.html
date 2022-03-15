@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0,maximum-scale=1.0">
+    <title>Waiting for the payment result</title>
+    <style>
+        p{width:100%;text-align: center;}
+    </style>
+</head>
+<body>
+<p style="margin-top: 120px;">
+Waiting for the payment result, please wait
+</p>
+<p style="margin-top: 20px;">
+    <input type="button" onclick="callJS()" value=" pay success">
+
+</p>
+
+</body>
+<script>
+    function callJS(){
+        console.log("callJs ....");
+        window.android.backToAndroid("1");
+        return "1";
+    }
+    callJS();
+</script>
+</html>

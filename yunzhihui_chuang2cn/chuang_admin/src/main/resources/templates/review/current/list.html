@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+    <title>当前评审管理</title>
+</head>
+<style>
+    .group-normal{background-color: #e2e2e2;margin-bottom: 2px !important;color: #2E2D3C}
+    .group-select{background-color: #5FB878;}
+    .group-normal:hover{font-weight: bold;color: #2E2D3C}
+</style>
+
+<body>
+<div th:replace="common/child_nav :: child_nav"></div>
+<form id="refreshForm">
+    <input type="hidden" id="currentGroupId" name="currentGroupId" th:value="${currentGroupId}">
+    <input th:value="${pageInfo.number}" name="pageNumber" id="pageNumber" value="0" type="hidden"/>
+</form>
+<div class="layui-fluid" id="LAY-component-grid-list">
+    <div class="layui-row layui-col-space10 demo-list">
+        <div class="layui-col-sm2" th:if="${showNav}">
+            <!-- 填充内容 -->
+            <div class="layui-card">
+                <div class="layui-card-header" style="text-align: center;font-weight: bold;">评审组</div>
+                <div class="layui-card-body">
+                    <div class="layui-btn-container" id="group_list_div" th:each="item:${groupList}">
+                        <button th:data-groupid="${item.id}" class="layui-btn layui-btn-fluid  group-normal "  th:text="${item.name}"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:class="${showNav}?'layui-col-sm10':'layui-col-sm12'">
+            <div class="layui-card">
+                <div class="layui-card-body" style="padding:0">
+                    <div class="layui-tab layui-tab-card">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">项目列表</li>
+                            <li>专家列表</li>
+                            <a class="layui-btn layui-btn-small" th:href="'/review/group/down/'+${currentGroupId}" target="_blank" style="line-height:1.6em;margin-top:3px;float:right;margin-right: 5px;" title="导出组评审数据">
+                                <i class="layui-icon layui-icon-download-circle" style="line-height:30px"></i>导出评审组数据</a>
+                        </ul>
+                        <div class="layui-tab-content">
+                            <div class="layui-tab-item layui-show">
+                                <div class="layui-card-body layui-table-body layui-table-main">
+                                    <table class="layui-table layui-form">
+                                        <thead>
+                                        <tr>
+                                            <th style="width: 70px;">姓名</th>
+                                            <th style="width: 32px;">性别</th>
+                                            <th>申报单位</th>
+                                            <th>申报项目</th>
+                                            <th style="width: 70px;">人才类型</th>
+                                            <th style="width: 70px;">专业领域</th>
+                                            <th style="width: 70px;">专业方向</th>
+                                            <th style="width: 50px;">推荐地</th>
+                                            <th style="width: 50px;">答辩时间</th>
+                                            <th style="width: 50px;">分值</th>
+                                            <th style="width: 50px;">状态</th>
+                                            <th style="width: 50px;">操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="productBody">
+                                            <tr th:each="item,stat:${pageInfo.content}">
+                                                <td th:text="${item.pi_user_name}"></td>
+                                                <td th:text="${item.pi_sex_}==0?'女':'男'"></td>
+                                                <td th:text="${item.pi_work_company}"></td>
+                                                <td th:text="${item.pi_product_name}"></td>
+                                                <td th:text="${item.cpt_name_}"></td>
+                                                <td th:text="${item.ct_name_}"></td>
+                                                <td th:text="${item.pi_major_field}"></td>
+                                                <td th:text="${item.pi_recommend_}"></td>
+                                                <td th:text="${item.rp_duration_}"></td>
+                                                <td th:text="${item.rp_status_} == 2 ? ${item.rp_score_} : '-'">-</td>
+                                                <td th:text="${item.rp_status_} == 2 ? '已完成' : (${item.rp_status_} == 1 ? '评审中' : '待评审')">-</td>
+                                                <td class="td-manage">
+                                                    <a title="详情" th:onclick="detail([[${item.pi_id}]])" href="javascript:void(0);">
+                                                        <i class="layui-icon">&#xe63c;</i>详情
+                                                    </a>
+                                                    <a th:if="${item.rp_status_== 2}" title="PDF" target="_blank" th:href="'/review/current/pdfs/'+${item.pi_id}">
+                                                        <i class="layui-icon">&#xe63c;</i>PDF
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="layui-card-body ">
+                                    <div class="page">
+                                        <div th:replace="common/pageinfo :: pageinfo">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-tab-item">
+                                <div class="layui-card-body layui-table-body layui-table-main">
+                                    <table class="layui-table layui-form">
+                                        <thead>
+                                        <tr>
+                                            <th style="width:40px;">序号</th>
+                                            <th style="width:70px;">姓名</th>
+                                            <th>单位</th>
+                                            <th style="width:70px;">职务</th>
+                                            <th style="width:70px;">职称</th>
+                                            <th>专业领域</th>
+                                            <th style="width:60px;">专家类别</th>
+                                            <th style="width:60px;">专家星级</th>
+                                            <th style="width:60px;">是否登录</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="specBody" th:each="model,stat:${specList}">
+                                            <td th:text="${stat.count}">0</td>
+                                            <td th:text="${model.userName}"></td>
+                                            <td th:text="${model.company}"></td>
+                                            <td th:text="${model.rank}"></td>
+                                            <td th:text="${model.titleName}"></td>
+                                            <td th:text="${model.territoryName}"></td>
+                                            <td th:text="${model.specTypeName}"></td>
+                                            <td th:text="${model.level}"></td>
+                                            <td>-</td>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+    layui.use(['laydate','form'], function(){
+        var laydate = layui.laydate;
+        var form = layui.form;
+        var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,laydate = layui.laydate
+            ,element = layui.element;
+
+           $('.group-normal[data-groupid=[[${currentGroupId}]]]').addClass('group-select');
+
+          $('.group-normal').on('click',function(){
+            let $that=$(this);
+            let currId=$that.attr('data-groupid');
+            //只有切换是，才提交form
+            if(currId != $('#currentGroupId').val()){
+                $('.group-normal').removeClass('group-select');
+                $that.addClass('group-select');
+                $('#currentGroupId').val(currId);
+                $("#pageNumber").val(1);
+                $('#refreshForm').submit();
+            }
+          });
+    });
+
+
+    function detail(id) {
+        window.top.xadmin.add_tab("评审详情","/review/current/detail/"+id+"?currentGroupId=[[${currentGroupId}]]");
+    }
+
+    function onpageinfo(pageNumber) {
+        $("#pageNumber").val(pageNumber);
+        $("#refreshForm").submit();
+    };
+
+</script>
+</html>

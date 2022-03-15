@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+</head>
+<body>
+<div class="layui-container">
+    <div class="fly-panel">
+        <div class="fly-none">
+            <h2><i class="layui-icon layui-icon-loading"></i></h2>
+            <p th:text="${__MESSAGE}"></p>
+        </div>
+    </div>
+</div>
+</body>
+<script th:inline="javascript">
+/*<![CDATA[*/
+var __MESSAGE = /*[[${__MESSAGE}]]*/ null;
+var __URL = /*[[${__URL}]]*/ null;
+/*]]>*/
+
+    setTimeout(function(){
+        timeclock(__URL);
+    },2000);
+
+    function onpage(url){
+        if(url ==""){
+            return ;
+        }
+        location.href = url;
+
+    }
+
+
+
+
+
+</script>
+
+</html>

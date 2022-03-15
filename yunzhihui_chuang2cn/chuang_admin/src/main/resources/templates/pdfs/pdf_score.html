@@ -1,0 +1,67 @@
+<html>
+<head>
+    <title></title>
+    <style>
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-style: solid;
+    border-width: 0.5px;
+    border-color: #000000;
+    table-layout: fixed;
+    word-break: break-all;
+}
+
+table tr td {
+    border-width: 0.5px;
+    border-style: solid;
+    border-color: #000000;
+    padding: 9px 9px;
+    width:30%;
+}
+
+table thead tr th {
+    border-width: 0.5px;
+    border-style: solid;
+    border-color: #000000;
+    text-align: center;
+    padding: 9px 9px;
+}
+</style>
+</head>
+<body>
+<table>
+    <caption>[[${title}]]<br/><br/></caption>
+    <thead>
+
+    <tr>
+        <th>申报人姓名</th>
+        <th colspan="2" th:text="${name}"></th>
+    </tr>
+    <tr>
+        <th style="width:110px">评价类别（满分100分）</th>
+        <th>评价内容</th>
+        <th style="width:60px">总得分</th>
+    </tr>
+    </thead>
+    <tr th:each="item,stat:${recordDetailList}">
+        <td th:text="${item.ruleName}"></td>
+        <td th:text="${item.ruleDetailName}"></td>
+        <td th:if="${stat.count == 1}" th:rowspan="${recordDetailListSize}" style="text-align: center;"><b th:text="${recordScore}"></b></td>
+    </tr>
+    <tr>
+        <td colspan="3">注：分数≥85分的为A类，属优先推荐项目；75≤分数＜85分为B类，属推荐项目；65≤分数＜75为C类，属一般推荐项目；65分以下为D类，属不推荐项目。团队项目应全面考虑核心成员（特别是前三位）的总体情况。
+        </td>
+    </tr>
+    <tr>
+        <td>专家对项目的评价和建议</td>
+        <td colspan="2" th:text="${remark}"></td>
+    </tr>
+    <tr>
+        <td>专家签名</td>
+        <td colspan="2"><img style="width:120px;" th:src="${fileName}" /><div style="text-align: right;" th:text="${date}"></div></td>
+    </tr>
+
+</table>
+</body>
+</html>

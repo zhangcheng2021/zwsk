@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+    <title>短信记录查询</title>
+</head>
+
+<body>
+<div th:replace="common/child_nav :: child_nav">
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5" id="from_serach">
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input type="text" name="mobile" id="mobile" th:value="${mobile}" placeholder="请输入手机号码" autocomplete="off" class="layui-input"></div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input th:value="${pageInfo.number}" name="pageNumber" id="pageNumber" value="0" type="hidden"/>
+
+                            <button class="layui-btn" lay-submit="" lay-filter="sreach">
+
+                                <i class="layui-icon">&#xe615;</i>查询</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-card-body layui-table-body layui-table-main">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr>
+<!--                            <th>-->
+<!--                                <input type="checkbox" lay-filter="checkall" name="" lay-skin="primary">-->
+<!--                            </th>-->
+                            <th>序号</th>
+                            <th>手机号码</th>
+                            <th>短信内容</th>
+                            <th>发送时间</th>
+                            <th>状态</th>
+                            <th>备注</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="info,stat:${pageInfo.content}">
+<!--                            <td>-->
+<!--                                <input type="checkbox" name="id" value="1"   lay-skin="primary">-->
+<!--                            </td>-->
+                            <td th:text="${stat.count}">0</td>
+                            <td th:text="${info.mobile}"></td>
+                            <td th:text="${info.msg}"></td>
+                            <td th:text="${#dates.format(info.sendTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                            <td th:if="${info.sendStatus} eq 0 "><span class="layui-btn layui-btn-normal layui-btn-mini">成功</span></td>
+                            <td th:if="${info.sendStatus} eq -1 "><span class="layui-btn layui-btn-danger layui-btn-mini ">失败</span></td>
+                            <td th:text="${info.remark}"></td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-body ">
+                    <div class="page">
+                        <div th:replace="common/pageinfo :: pageinfo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['laydate','form'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+        var $ = layui.jquery;
+
+        form.on('submit(sreach)', function (data) {
+            console.log("sreach.....");
+
+            //form.submit();
+            $("#pageNumber").val(1);
+            $("#from_serach").submit();
+            return false;
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#start' //指定元素
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#end' //指定元素
+        });
+
+
+
+    });
+
+    function onpage(pageNumber) {
+        $("#pageNumber").val(pageNumber);
+        console.log("pageNumber:"+pageNumber)
+
+        $("#from_serach").submit();
+
+
+    };
+
+
+
+
+    function editInput(id) {
+        xadmin.open('编辑短信模板','./editInput?id='+id,500,480);
+
+    }
+
+    function addInput(status) {
+        // xadmin.open('编辑菜单','./editInput?id='+id,600,400);
+        $name = "添加短信模板";
+
+        xadmin.open($name,'./addInput',500,480);
+
+    }
+
+
+    // $("#from_serach").onclick(function(){
+    //     $("#from_serach").submit();
+    //
+    // });
+
+
+    /*-删除*/
+    function black_del(id){
+        layer.confirm('确认要删除吗？',function(index){
+            $.ajax({
+                type: "POST",
+                url: "./delete",
+                data:{id:id,status:status},
+                dataType:'json',
+                success:function (data) {
+                    console.log("data->code:"+data.code);
+                    if (data.code == 0) {
+
+                        layui.layer.alert("删除成功", {
+                                icon: 6
+                            },
+                            function () {
+                                // 进行刷新
+                                location.reload();
+                            });
+                    } else {
+                        layer.alert("删除失败", {
+                                icon: 2
+                            });
+                    }
+                },
+                error:function (data) {
+                    alert("提交失败"+JSON.stringify(data));
+                }
+            });
+            return false;
+        });
+    }
+</script>
+</html>

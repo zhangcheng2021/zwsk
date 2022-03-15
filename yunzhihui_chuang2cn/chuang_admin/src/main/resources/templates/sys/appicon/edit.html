@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+    <title>编辑广告内容</title>
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form action="" method="post" class="layui-form" enctype="multipart/form-data">
+            <div class="layui-form-item">
+                <label for="type" class="layui-form-label">
+                    <span class="x-red">*</span>类型
+                </label>
+                <div class="layui-input-inline">
+                    <select name="type" id="type" >
+
+                        <option th:selected="${map.key} eq ${model.type}"  th:each="map:${map}" th:value="${map.key}" th:text="${map.value}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="name" class="layui-form-label">
+                    <span class="x-red">*</span>名称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="name" th:value="${model.name}" name="name" placeholder="请输入名称" lay-verify="required" required=""
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="myfiles" class="layui-form-label">
+                    <span class="x-red">*</span>图片
+                </label>
+                <div class="layui-input-inline">
+                    <button type="button" class="layui-btn" id="myfiles">
+                        <i class="layui-icon">&#xe67c;</i>重新上传图片
+                    </button>
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>仅支持jpg,png等图片类型
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="view_img" class="layui-form-label">
+                    <span class="x-red"></span>
+                </label>
+                <div class="layui-input-inline">
+                    <img th:src="@{{dom}{imgurl}(dom=${_SYS_IMAGES_DOMAIN},imgurl=${model.icon})}"  width="300" id="view_img">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="location" class="layui-form-label">
+                    <span class="x-red">*</span>链接
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="location" th:value="${model.location}" name="location"  placeholder="请输入链接" lay-verify="required" required=""
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="sort" class="layui-form-label">
+                    <span class="x-red">*</span>排序
+                </label>
+                <div class="layui-input-inline">
+                    <input type="number" id="sort" name="sort" th:value="${model.sort}"  lay-verify="required" required=""
+                           autocomplete="off" class="layui-input">
+                </div>
+                <!--                        <div class="layui-form-mid layui-word-aux">-->
+                <!--                            <span class="x-red">*</span>将会成为您唯一的登入名-->
+                <!--                        </div>-->
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label for="tagline" class="layui-form-label">
+                    说明
+                </label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入内容" id="tagline" th:value="${model.tagline}" th:text="${model.tagline}" name="remark" class="layui-textarea"></textarea>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="tagline" class="layui-form-label"></label>
+                <input type="hidden" id="icon" name="icon" th:value="${model.icon}">
+                <input type="hidden" id="id" name="id" th:value="${model.id}">
+
+                <button class="layui-btn" lay-filter="add" lay-submit="">编辑</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>layui.use(['form', 'layer', 'jquery'],
+    function () {
+        $ = layui.jquery;
+        var form = layui.form,
+            layer = layui.layer;
+
+        //自定义验证规则
+        form.verify({
+            url_verify: function (value) {
+                if (value.length < 5) {
+                    return 'URL至少不小于得5个字符';
+                }
+            },
+            name_verify: function (value) {
+                if (value.length < 2) {
+                    return '菜单名称不少于2个字符';
+                }
+            }
+            //pass: [/(.+){6,12}$/, '密码必须6到12位'],
+            // repass: function (value) {
+            //     if ($('#L_pass').val() != $('#L_repass').val()) {
+            //         return '两次密码不一致';
+            //     }
+            // }
+        });
+        form.on('checkbox(father)', function(data){
+
+            if(data.elem.checked){
+                $(data.elem).parent().siblings('td').find('input').prop("checked", true);
+                form.render();
+            }else{
+                $(data.elem).parent().siblings('td').find('input').prop("checked", false);
+                form.render();
+            }
+        });
+        layui.use('upload', function(){
+            var upload = layui.upload;
+
+            //执行实例
+            var uploadInst = upload.render({
+                elem: '#myfiles' //绑定元素
+                ,url: '../../images/uploadImg' //上传接口
+                ,accept:"images",
+                data:{"status":"model"}
+                ,done: function(res){
+                    //上传完毕回调
+                    //alert(res.msg);
+                    console.log("url:"+res.data.url)
+                    console.log("path:"+res.data.path)
+                    $("#view_img").attr('src',res.data.src);
+                    $("#view_img").show();
+                    $("#icon").val(res.data.path);
+                }
+                ,error: function(){
+                    //请求异常回调
+                    alert(res.msg);
+                }
+            });
+        });
+
+        //监听提交
+        form.on('submit(add)',
+            function (data) {
+                console.log(data);
+                console.log(data.field);
+                //发异步，把数据提交给php
+                //alert(vals);
+
+                // return false;
+                $.ajax({
+                    type: "POST",
+                    url: "./edit",
+                    data:JSON.stringify(data.field),
+                    headers : {"content-type" : "application/json;charset=UTF-8"},
+                    dataType:'json',
+                    success:function (data) {
+                        console.log("data->code:"+data.code);
+                        if (data.code == 0) {
+                            layui.layer.alert("编辑成功", {
+                                    icon: 6
+                                },
+                                function () {
+                                    //关闭当前frame
+                                    xadmin.close();
+                                    // 可以对父窗口进行刷新
+                                    xadmin.father_reload();
+                                });
+
+                            // return true;
+                            return false;
+
+                        } else {
+                            layer.alert("编辑失败", {
+                                    icon: 2
+                                },
+                                function () {
+                                    //关闭当前frame
+                                    // xadmin.close();
+
+                                    // 可以对父窗口进行刷新
+                                    // xadmin.father_reload();
+                                });
+                            //
+                        }
+                    },
+                    error:function (data) {
+                        alert("提交失败"+JSON.stringify(data));
+                    }
+                });
+
+                return false;
+            });
+
+    });</script>
+
+</body>
+
+</html>

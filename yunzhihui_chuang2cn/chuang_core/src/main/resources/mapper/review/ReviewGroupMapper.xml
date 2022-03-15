@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hsmap.yuezhihui.mapper.review.ReviewGroupMapper">
+  <resultMap id="BaseResultMap" type="com.hsmap.yuezhihui.entity.review.ReviewGroup">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name_" jdbcType="VARCHAR" property="name" />
+    <result column="spec_count" jdbcType="INTEGER" property="specCount" />
+    <result column="product_count" jdbcType="INTEGER" property="productCount" />
+    <result column="address_" jdbcType="VARCHAR" property="address" />
+    <result column="am_start_time" jdbcType="VARCHAR" property="amStartTime" />
+    <result column="am_end_time" jdbcType="VARCHAR" property="amEndTime" />
+    <result column="pm_start_time" jdbcType="VARCHAR" property="pmStartTime" />
+    <result column="pm_end_time" jdbcType="VARCHAR" property="pmEndTime" />
+    <result column="territory_ids" jdbcType="VARCHAR" property="territoryIds" />
+    <result column="start_" jdbcType="INTEGER" property="start" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+    <result column="sort_" jdbcType="INTEGER" property="sort" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="remark_" jdbcType="VARCHAR" property="remark" />
+    <result column="batch_id" jdbcType="INTEGER" property="batchId" />
+    <result column="batch_name" jdbcType="VARCHAR" property="batchName" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, name_, spec_count, product_count, address_, am_start_time, am_end_time, pm_start_time,
+    pm_end_time, territory_ids, start_, is_del, sort_, create_time, remark_, batch_id,
+    batch_name
+  </sql>
+  <select id="selectByExample" parameterType="com.hsmap.yuezhihui.entity.review.ReviewGroupExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from review_group
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="pageNumber>0">
+      limit ${(pageNumber-1)*pageSize},${pageSize}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from review_group
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from review_group
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.hsmap.yuezhihui.entity.review.ReviewGroupExample">
+    delete from review_group
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.hsmap.yuezhihui.entity.review.ReviewGroup">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into review_group (name_, spec_count, product_count,
+      address_, am_start_time, am_end_time,
+      pm_start_time, pm_end_time, territory_ids,
+      start_, is_del, sort_,
+      create_time, remark_, batch_id,
+      batch_name)
+    values (#{name,jdbcType=VARCHAR}, #{specCount,jdbcType=INTEGER}, #{productCount,jdbcType=INTEGER},
+      #{address,jdbcType=VARCHAR}, #{amStartTime,jdbcType=VARCHAR}, #{amEndTime,jdbcType=VARCHAR},
+      #{pmStartTime,jdbcType=VARCHAR}, #{pmEndTime,jdbcType=VARCHAR}, #{territoryIds,jdbcType=VARCHAR},
+      #{start,jdbcType=INTEGER}, #{isDel,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER},
+      #{createTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{batchId,jdbcType=INTEGER},
+      #{batchName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hsmap.yuezhihui.entity.review.ReviewGroup">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into review_group
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        name_,
+      </if>
+      <if test="specCount != null">
+        spec_count,
+      </if>
+      <if test="productCount != null">
+        product_count,
+      </if>
+      <if test="address != null">
+        address_,
+      </if>
+      <if test="amStartTime != null">
+        am_start_time,
+      </if>
+      <if test="amEndTime != null">
+        am_end_time,
+      </if>
+      <if test="pmStartTime != null">
+        pm_start_time,
+      </if>
+      <if test="pmEndTime != null">
+        pm_end_time,
+      </if>
+      <if test="territoryIds != null">
+        territory_ids,
+      </if>
+      <if test="start != null">
+        start_,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+      <if test="sort != null">
+        sort_,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="remark != null">
+        remark_,
+      </if>
+      <if test="batchId != null">
+        batch_id,
+      </if>
+      <if test="batchName != null">
+        batch_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="specCount != null">
+        #{specCount,jdbcType=INTEGER},
+      </if>
+      <if test="productCount != null">
+        #{productCount,jdbcType=INTEGER},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="amStartTime != null">
+        #{amStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="amEndTime != null">
+        #{amEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="pmStartTime != null">
+        #{pmStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="pmEndTime != null">
+        #{pmEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="territoryIds != null">
+        #{territoryIds,jdbcType=VARCHAR},
+      </if>
+      <if test="start != null">
+        #{start,jdbcType=INTEGER},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="batchId != null">
+        #{batchId,jdbcType=INTEGER},
+      </if>
+      <if test="batchName != null">
+        #{batchName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.hsmap.yuezhihui.entity.review.ReviewGroupExample" resultType="java.lang.Long">
+    select count(*) from review_group
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update review_group
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null">
+        name_ = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.specCount != null">
+        spec_count = #{record.specCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.productCount != null">
+        product_count = #{record.productCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.address != null">
+        address_ = #{record.address,jdbcType=VARCHAR},
+      </if>
+      <if test="record.amStartTime != null">
+        am_start_time = #{record.amStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.amEndTime != null">
+        am_end_time = #{record.amEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pmStartTime != null">
+        pm_start_time = #{record.pmStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pmEndTime != null">
+        pm_end_time = #{record.pmEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.territoryIds != null">
+        territory_ids = #{record.territoryIds,jdbcType=VARCHAR},
+      </if>
+      <if test="record.start != null">
+        start_ = #{record.start,jdbcType=INTEGER},
+      </if>
+      <if test="record.isDel != null">
+        is_del = #{record.isDel,jdbcType=INTEGER},
+      </if>
+      <if test="record.sort != null">
+        sort_ = #{record.sort,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.remark != null">
+        remark_ = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.batchId != null">
+        batch_id = #{record.batchId,jdbcType=INTEGER},
+      </if>
+      <if test="record.batchName != null">
+        batch_name = #{record.batchName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update review_group
+    set id = #{record.id,jdbcType=INTEGER},
+      name_ = #{record.name,jdbcType=VARCHAR},
+      spec_count = #{record.specCount,jdbcType=INTEGER},
+      product_count = #{record.productCount,jdbcType=INTEGER},
+      address_ = #{record.address,jdbcType=VARCHAR},
+      am_start_time = #{record.amStartTime,jdbcType=VARCHAR},
+      am_end_time = #{record.amEndTime,jdbcType=VARCHAR},
+      pm_start_time = #{record.pmStartTime,jdbcType=VARCHAR},
+      pm_end_time = #{record.pmEndTime,jdbcType=VARCHAR},
+      territory_ids = #{record.territoryIds,jdbcType=VARCHAR},
+      start_ = #{record.start,jdbcType=INTEGER},
+      is_del = #{record.isDel,jdbcType=INTEGER},
+      sort_ = #{record.sort,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      remark_ = #{record.remark,jdbcType=VARCHAR},
+      batch_id = #{record.batchId,jdbcType=INTEGER},
+      batch_name = #{record.batchName,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hsmap.yuezhihui.entity.review.ReviewGroup">
+    update review_group
+    <set>
+      <if test="name != null">
+        name_ = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="specCount != null">
+        spec_count = #{specCount,jdbcType=INTEGER},
+      </if>
+      <if test="productCount != null">
+        product_count = #{productCount,jdbcType=INTEGER},
+      </if>
+      <if test="address != null">
+        address_ = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="amStartTime != null">
+        am_start_time = #{amStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="amEndTime != null">
+        am_end_time = #{amEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="pmStartTime != null">
+        pm_start_time = #{pmStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="pmEndTime != null">
+        pm_end_time = #{pmEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="territoryIds != null">
+        territory_ids = #{territoryIds,jdbcType=VARCHAR},
+      </if>
+      <if test="start != null">
+        start_ = #{start,jdbcType=INTEGER},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null">
+        sort_ = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark_ = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="batchId != null">
+        batch_id = #{batchId,jdbcType=INTEGER},
+      </if>
+      <if test="batchName != null">
+        batch_name = #{batchName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hsmap.yuezhihui.entity.review.ReviewGroup">
+    update review_group
+    set name_ = #{name,jdbcType=VARCHAR},
+      spec_count = #{specCount,jdbcType=INTEGER},
+      product_count = #{productCount,jdbcType=INTEGER},
+      address_ = #{address,jdbcType=VARCHAR},
+      am_start_time = #{amStartTime,jdbcType=VARCHAR},
+      am_end_time = #{amEndTime,jdbcType=VARCHAR},
+      pm_start_time = #{pmStartTime,jdbcType=VARCHAR},
+      pm_end_time = #{pmEndTime,jdbcType=VARCHAR},
+      territory_ids = #{territoryIds,jdbcType=VARCHAR},
+      start_ = #{start,jdbcType=INTEGER},
+      is_del = #{isDel,jdbcType=INTEGER},
+      sort_ = #{sort,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      remark_ = #{remark,jdbcType=VARCHAR},
+      batch_id = #{batchId,jdbcType=INTEGER},
+      batch_name = #{batchName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

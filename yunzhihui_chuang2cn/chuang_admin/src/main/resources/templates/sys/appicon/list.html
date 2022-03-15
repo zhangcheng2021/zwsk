@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+    <title>客户端图标管理</title>
+</head>
+
+<body>
+    <div th:replace="common/child_nav :: child_nav">
+
+    </div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5" id="from_serach">
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <select name="type_" id="type_">
+                                <option value="-1">选择类型</option>
+                                <option th:selected="${model.type} eq ${typeMap.key}" th:each="typeMap:${map}" th:value="${typeMap.key}" th:text="${typeMap.value}"></option>
+                            </select>
+                        </div>
+
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input type="text" name="name" id="name" th:value="${model.name}" placeholder="请输入查询名称" autocomplete="off" class="layui-input"></div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input th:value="${pageInfo.number}" name="pageNumber" id="pageNumber" value="0" type="hidden"/>
+
+                            <button class="layui-btn" lay-submit="" lay-filter="sreach">
+                                <i class="layui-icon">&#xe615;</i>查询</button>
+
+
+
+                        </div>
+                    </form>
+                </div>
+
+
+                <div class="layui-card-header">
+                    <button class="layui-btn" onclick="xadmin.open('添加图标','./addInput',800,600)"><i class="layui-icon">&#xe654;</i>添加</button>
+                </div>
+                <div class="layui-card-body layui-table-body layui-table-main">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>类型</th>
+                            <th>名称</th>
+                            <th>图片</th>
+                            <th>链接</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="info,stat:${pageInfo.content}">
+                            <td th:text="${stat.count}">0</td>
+                            <td th:text="${map[info.type]}"></td>
+                            <td th:text="${info.name}"></td>
+                            <td><img th:src="@{{dom}{imgurl}(dom=${_IMAGES_DOMAIN},imgurl=${info.icon})}" width="500"></td>
+                            <td th:text="${info.location}"></td>
+                            <td class="td-status" th:if="${info.isDispark} eq 0">
+                                <span class="layui-btn layui-btn-normal layui-btn-mini" th:onclick="isDispark([[${info.id}]],1)">可用</span>
+                            </td>
+                            <td class="td-status" th:if="${info.isDispark} ne 0">
+                                <span class="layui-btn layui-btn-normal layui-btn-mini  layui-btn-disabled"  th:onclick="isDispark([[${info.id}]],0)">停用</span>
+                            </td>
+                            <td class="td-manage">
+                                <!--                                <a onclick="member_stop(this,'10001')" href="javascript:;"  title="启用">-->
+                                <!--                                    <i class="layui-icon">&#xe601;</i>-->
+                                <!--                                </a>-->
+                                <a title="编辑"  th:if="${info.isDel eq 0}" th:onclick="editInput([[${info.id}]])" href="javascript:;">
+                                    <i class="layui-icon">&#xe642;</i>编辑
+                                </a>
+                                <!--                                <a onclick="xadmin.open('修改密码','member-password.html',600,400)" title="修改密码" href="javascript:;">-->
+                                <!--                                    <i class="layui-icon">&#xe631;</i>-->
+                                <!--                                </a>-->
+                                <a title="删除" th:if="${info.isDel eq 0}" th:onclick="menu_del(this,[[${info.id}]],-1)" href="javascript:void(0);">
+                                    <i class="layui-icon">&#xe640;</i>删除
+                                </a>
+                                <a title="恢复" th:if="${info.isDel ne 0}" th:onclick="menu_del(this,[[${info.id}]],0)" href="javascript:void(0);">
+                                    <i class="layui-icon">&#xe669;</i>恢复</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="layui-card-body ">
+                    <div class="page">
+                        <div th:replace="common/pageinfo :: pageinfo">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['laydate','form'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+        var $ = layui.jquery;
+        // 监听全选
+        form.on('checkbox(checkall)', function(data){
+
+            if(data.elem.checked){
+                $('tbody input').prop('checked',true);
+            }else{
+                $('tbody input').prop('checked',false);
+            }
+            form.render('checkbox');
+        });
+
+        form.on('submit(sreach)', function (data) {
+            console.log("sreach.....");
+
+            //form.submit();
+            $("#pageNumber").val(1);
+            $("#from_serach").submit();
+            return false;
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#start' //指定元素
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#end' //指定元素
+        });
+
+
+
+    });
+
+    function onpage(pageNumber) {
+        $("#pageNumber").val(pageNumber);
+        console.log("pageNumber:"+pageNumber)
+
+        $("#from_serach").submit();
+
+
+    };
+
+
+
+
+    function editInput(id) {
+        xadmin.open('编辑菜单','./editInput?id='+id,600,400);
+
+    }
+
+    /*用户-删除*/
+    function menu_del(obj,id,status){
+        $msg=status == 0?"恢复":"删除";
+        layer.confirm('确认要'+$msg+'吗？',function(index){
+            //发异步删除数据
+            //$(obj).parents("tr").remove();
+            //layer.msg('已删除!',{icon:1,time:1000});
+
+
+            $.ajax({
+                type: "POST",
+                url: "./delete",
+                data:{id:id,status:status},
+                dataType:'json',
+                success:function (data) {
+                    console.log("data->code:"+data.code);
+                    if (data.code == 0) {
+
+                            layui.layer.alert($msg+"成功", {
+                                    icon: 6
+                                },
+                                function () {
+                                    // 进行刷新
+                                    location.reload();
+                                });
+
+                        // return true;
+
+                    } else {
+                        layer.alert($msg+"失败", {
+                                icon: 2
+                            },
+                            function () {
+                                //关闭当前frame
+                                // xadmin.close();
+
+                                // 可以对父窗口进行刷新
+                                // location.reload();
+                            });
+                        //
+                    }
+                },
+                error:function (data) {
+                    alert("提交失败"+JSON.stringify(data));
+                }
+            });
+
+            return false;
+        });
+    }
+
+
+
+    /*用户-删除*/
+    function isDispark(id,status){
+        $msg=status == 0?"启用":"停用";
+        layer.confirm('确认要'+$msg+'吗？',function(index){
+            //发异步删除数据
+            //$(obj).parents("tr").remove();
+            //layer.msg('已删除!',{icon:1,time:1000});
+
+
+            $.ajax({
+                type: "POST",
+                url: "./dispark",
+                data:{id:id,status:status},
+                dataType:'json',
+                success:function (data) {
+                    console.log("data->code:"+data.code);
+                    if (data.code == 0) {
+
+                            layui.layer.alert($msg+"成功", {
+                                    icon: 6
+                                },
+                                function () {
+                                    // 进行刷新
+                                    location.reload();
+                                });
+
+                        // return true;
+
+                    } else {
+                        layer.alert($msg+"失败", {
+                                icon: 2
+                            },
+                            function () {
+                            });
+                    }
+                },
+                error:function (data) {
+                    alert("提交失败"+JSON.stringify(data));
+                }
+            });
+
+            return false;
+        });
+    }
+
+
+
+
+
+    function delAll (argument) {
+        var ids = [];
+
+        // 获取选中的id
+        $('tbody input').each(function(index, el) {
+            if($(this).prop('checked')){
+                ids.push($(this).val())
+            }
+        });
+
+        layer.confirm('确认要删除吗？'+ids.toString(),function(index){
+            //捉到所有被选中的，发异步进行删除
+            layer.msg('删除成功', {icon: 1});
+            $(".layui-form-checked").not('.header').parents('tr').remove();
+        });
+    }
+</script>
+</html>

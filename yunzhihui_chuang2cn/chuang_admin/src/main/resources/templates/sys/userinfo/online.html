@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+    <title>系统用户管理</title>
+</head>
+
+<body>
+<div th:replace="common/child_nav :: child_nav">
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body layui-table-body layui-table-main">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr>
+                            <!--                            <th>-->
+                            <!--                                <input type="checkbox" lay-filter="checkall" name="" lay-skin="primary">-->
+                            <!--                            </th>-->
+                            <th>登录名</th>
+                            <th>最后操作时间</th>
+                            <th>登录IP</th>
+                            <th>浏览器</th>
+                            <th>操作系统</th>
+                            <th width="10%">操作</th></tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="user,stat:${modelList}">
+                            <!--                            <td>-->
+                            <!--                                <input type="checkbox" name="id" value="1"   lay-skin="primary">-->
+                            <!--                            </td>-->
+                            <td th:text="${user.loginName}"></td>
+                            <td th:text="${#dates.format(user.loginTime,'yyyy-MM-dd HH:mm:ss')}"></td>
+                            <td th:text="${user.ip}"></td>
+                            <td th:text="${user.browser}"></td>
+                            <td th:text="${user.osName}"></td>
+
+                            <td class="td-manage">
+                                <!--                                <a onclick="member_stop(this,'10001')" href="javascript:;"  title="启用">-->
+                                <!--                                    <i class="layui-icon">&#xe601;</i>-->
+                                <!--                                </a>-->
+                                <a title="强制下线"  th:onclick="offline([[${user.userId}]])" href="javascript:;">
+                                    <i class="layui-icon">&#xe64d;</i>强制下线
+                                </a>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['laydate','form'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+        var $ = layui.jquery;
+        // 监听全选
+        form.on('checkbox(checkall)', function(data){
+
+            if(data.elem.checked){
+                $('tbody input').prop('checked',true);
+            }else{
+                $('tbody input').prop('checked',false);
+            }
+            form.render('checkbox');
+        });
+
+    });
+
+
+    //锁定
+    function offline(id){
+
+        layer.confirm('确认要强制下强吗？',function(index){
+
+            $.ajax({
+                type: "POST",
+                url: "./offline",
+                data:{userId:id},
+                dataType:'json',
+                success:function (data) {
+                    console.log("data->code:"+data.code);
+                    if (data.code == 0) {
+
+                        layui.layer.alert("强制下线成功", {
+                                icon: 6
+                            },
+                            function () {
+                                location.reload();
+                            });
+
+                    } else {
+                        layer.alert("强制下线失败", {icon: 2});
+                    }
+                },
+                error:function (data) {
+                    alert("提交失败"+JSON.stringify(data));
+                }
+            });
+
+            return false;
+        });
+    }
+</script>
+</html>

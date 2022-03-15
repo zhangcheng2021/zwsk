@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+    <title>美洽聊天地址设置</title>
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form">
+            <div class="layui-form-item">
+                <label for="meichatUrl" class="layui-form-label">
+                    <span class="x-red">*</span>美洽聊天地址
+                </label>
+                <div class="layui-input-inline">
+                    <textarea placeholder="请输入内容" id="meichatUrl" cols="40" rows="4" name="meichatUrl" class="layui-textarea" th:value="${meichatUr}" th:text="${meichatUr}"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="meichatUrl" class="layui-form-label"></label>
+                <button class="layui-btn" lay-filter="add" lay-submit="">编辑</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'layer', 'jquery'],
+        function () {
+            $ = layui.jquery;
+            var form = layui.form,
+                layer = layui.layer;
+
+            //自定义验证规则
+            form.verify({
+                url_verify: function (value) {
+                    if (value.length < 5) {
+                        return 'URL至少不小于得5个字符';
+                    }
+                },
+                name_verify: function (value) {
+                    if (value.length < 2) {
+                        return '菜单名称不少于2个字符';
+                    }
+                }
+                //pass: [/(.+){6,12}$/, '密码必须6到12位'],
+                // repass: function (value) {
+                //     if ($('#L_pass').val() != $('#L_repass').val()) {
+                //         return '两次密码不一致';
+                //     }
+                // }
+            });
+
+            //监听提交
+            form.on('submit(add)',
+                function (data) {
+                    console.log(data.field);
+                    //发异步，把数据提交给php
+                    $.ajax({
+                        type: "POST",
+                        url: "./editMeichat",
+                        data:data.field,
+                        dataType:'json',
+                        success:function (data) {
+                            console.log("data->code:"+data.code);
+                            if (data.code == 0) {
+                                layui.layer.alert("修改成功", {
+                                        icon: 6
+                                    },
+                                    function () {
+                                        location.reload();
+                                    });
+
+                                // return true;
+
+                            } else {
+                                layer.alert("修改失败", {
+                                        icon: 2
+                                    },
+                                    function () {
+                                        //关闭当前frame
+                                        // xadmin.close();
+
+                                        // 可以对父窗口进行刷新
+                                        // xadmin.father_reload();
+                                    });
+                                //
+                            }
+                        },
+                        error:function (data) {
+                            alert("提交失败"+JSON.stringify(data));
+                        }
+                    });
+
+                    return false;
+                });
+
+        });</script>
+
+</body>
+
+</html>

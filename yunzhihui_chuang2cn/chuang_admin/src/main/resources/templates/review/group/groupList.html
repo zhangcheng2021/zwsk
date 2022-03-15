@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+    <title>评分规则管理</title>
+</head>
+<style>
+    .group-normal{background-color: #e2e2e2;margin-bottom: 2px !important;color: #2E2D3C}
+    .group-select{background-color: #5FB878;}
+    .group-normal:hover{font-weight: bold;color: #2E2D3C}
+    .edit-input{border:0}
+    .edit-input:hover,.edit-input:focus{border:0}
+    .layui-table td, .layui-table th{min-width:0 !important}
+</style>
+
+<body>
+    <div th:replace="common/child_nav :: child_nav"></div>
+    <form id="refreshForm">
+        <input type="hidden" id="currentGroupId" name="currentGroupId" th:value="${currentGroupId}">
+    </form>
+    <div class="layui-fluid" id="LAY-component-grid-list">
+        <div class="layui-row layui-col-space10 demo-list">
+            <div class="layui-col-sm2">
+                <!-- 填充内容 -->
+                <div class="layui-card">
+                    <div class="layui-card-header" style="text-align: center;font-weight: bold;">评审组</div>
+                    <div class="layui-card-body">
+                        <div class="layui-btn-container" id="group_list_div" th:each="item:${groupList}">
+                            <button th:data-groupid="${item.id}" class="layui-btn layui-btn-fluid  group-normal "  th:text="${item.name}"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-sm10">
+                <div class="layui-card">
+                    <div class="layui-form layui-card-header layuiadmin-card-header-auto">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label" style="width: auto;">评审地点</label>
+                                <div class="layui-inline">
+                                    <input type="text" id="address" name="address" maxlength="20" th:value="${reviewGroup.address}"   placeholder="请输入" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label" style="width: auto;">上午评审时间</label>
+                                <div class="layui-inline">
+                                    <input type="text" id="amStart" name="amStart" th:value="${am}" placeholder="上午时间" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label" style="width: auto;">下午评审时间</label>
+                                <div class="layui-inline">
+                                    <input type="text" th:value="${pm}" id="pmStart" name="pmStart" placeholder="下午时间" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <button class="layui-btn layui-btn-warm" lay-submit="" lay-filter="saveGroupInfo" style="display: block; height: 30px; line-height: 30px;">
+                                    <i class="layui-icon">&#x1005;</i>保存评审组信息</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-card-body" style="padding:0">
+                        <div class="layui-tab layui-tab-card">
+                            <ul class="layui-tab-title">
+                                <li class="layui-this">项目列表</li>
+                                <li>专家列表</li>
+                            </ul>
+                            <div class="layui-tab-content">
+                                <div class="layui-tab-item layui-show">
+                                    <div class="layui-form layui-card-header layuiadmin-card-header-auto" id="from_serach">
+
+                                        <div class="layui-form-item">
+
+                                            <div class="layui-input-inline layui-show-xs-block">
+                                                <select name="territoryId" id="territoryId">
+                                                    <option value="0">选择专业领域</option>
+                                                    <option  th:each="item:${coreTerritory}" th:value="${item.id}" th:text="${item.name}"></option>
+                                                </select>
+                                            </div>
+                                            <div class="layui-input-inline layui-show-xs-block">
+                                                <select name="typeId" id="typeId">
+                                                    <option value="0">选择人才类型</option>
+                                                    <option  th:each="item:${coreProjectType}" th:value="${item.id}" th:text="${item.name}"></option>
+                                                </select>
+                                            </div>
+                                            <div class="layui-input-inline layui-show-xs-block">
+                                                <div class="layui-input-inline">
+                                                    <input type="text" id="userName" name="userName" placeholder="请输入申报人名称" autocomplete="off" class="layui-input">
+                                                </div>
+                                            </div>
+                                            <div class="layui-inline" style="margin-bottom: 15px;">
+                                                <button class="layui-btn" lay-submit="" lay-filter="searchProduct" style="display: block; height: 30px; line-height: 30px;">
+                                                    <i class="layui-icon">&#xe615;</i>查询</button>
+                                            </div>
+                                            <div class="layui-inline" style="margin-bottom: 15px;">
+                                                <button class="layui-btn" lay-submit="" lay-filter="resetProduct" style="display: block; height: 30px; line-height: 30px;">
+                                                    <i class="layui-icon">&#xe669;</i>重置</button>
+                                            </div>
+                                            <div class="layui-inline" style="margin-bottom: 15px;">
+                                                <button class="layui-btn layui-btn-warm" lay-submit="" lay-filter="mutilProduct" style="display: block; height: 30px; line-height: 30px;">
+                                                    <i class="layui-icon">&#xe6b1;</i>批量调整</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="layui-card-body layui-table-body layui-table-main">
+                                        <table class="layui-table layui-form">
+                                            <thead>
+                                            <tr>
+                                                <th style="width: 30px;">
+                                                    <input type="checkbox" lay-filter="checkall" name="" lay-skin="primary">
+                                                </th>
+                                                <th style="width: 70px;">姓名</th>
+                                                <th style="width: 32px;">性别</th>
+                                                <th>申报单位</th>
+                                                <th>申报项目</th>
+                                                <th style="width: 70px;">人才类型</th>
+                                                <th style="width: 70px;">专业领域</th>
+                                                <th style="width: 70px;">专业方向</th>
+                                                <th style="width: 50px;">推荐地</th>
+                                                <th style="width: 50px;">排序号</th>
+                                                <th style="width: 50px;">操作</th></tr>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="productBody">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="layui-tab-item">
+                                    <div class="layui-form layui-card-header layuiadmin-card-header-auto" id="from_serach2">
+                                        <div class="layui-form-item">
+
+                                            <div class="layui-inline" style="margin-bottom: 15px;">
+                                                <button class="layui-btn layui-btn-warm" lay-submit="" lay-filter="mutilSpec" style="display: block; height: 30px; line-height: 30px;">
+                                                    <i class="layui-icon">&#xe608;</i>加入专家</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="layui-card-body layui-table-body layui-table-main">
+                                        <table class="layui-table layui-form">
+                                            <thead>
+                                            <tr>
+                                                <th style="width:40px;">序号</th>
+                                                <th style="width:70px;">姓名</th>
+                                                <th>单位</th>
+                                                <th style="width:70px;">职务</th>
+                                                <th style="width:70px;">职称</th>
+                                                <th>专业领域</th>
+                                                <th style="width:60px;">专家类别</th>
+                                                <th style="width:60px;">专家星级</th>
+                                                <th style="width:60px;">操作</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="specBody"></tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    var form;
+    layui.use(['laydate','form'], function(){
+        var laydate = layui.laydate;
+        form = layui.form;
+        var $ = layui.$
+            ,admin = layui.admin
+            ,table = layui.table
+            ,laydate = layui.laydate
+            ,element = layui.element;
+
+           $('.group-normal[data-groupid=[[${currentGroupId}]]]').addClass('group-select');
+
+          $('.group-normal').on('click',function(){
+            let $that=$(this);
+            let currId=$that.attr('data-groupid');
+            //只有切换是，才提交form
+            if(currId != $('#currentGroupId').val()){
+                $('.group-normal').removeClass('group-select');
+                $that.addClass('group-select');
+                $('#currentGroupId').val(currId);
+                $('#refreshForm').submit();
+            }
+          });
+        // 监听全选
+        form.on('checkbox(checkall)', function(data){
+            if(data.elem.checked){
+                $('tbody input').prop('checked',true);
+            }else{
+                $('tbody input').prop('checked',false);
+            }
+            form.render('checkbox');
+        });
+
+        form.on('submit(searchProduct)', function (data) {
+            $(":checkbox").prop('checked',false);
+            form.render('checkbox');
+            loadProductTable();
+        });
+        form.on('submit(resetProduct)', function (data) {
+            $('#territoryId').val(0);
+            $('#typeId').val(0);
+            $('#userName').val('')
+            form.render('select');
+            $(":checkbox").prop('checked',false);
+            form.render('checkbox');
+            loadProductTable();
+        });
+        form.on('submit(mutilProduct)', function (data) {
+            let chkcnt = $(':checkbox[name=checkContent]:checked');
+            let len = chkcnt.length;
+            if(len==0){
+                layer.msg("请勾选项目", { icon: 5 });
+            }else{
+                let rpIds = '';
+                $.each(chkcnt,function(i,item){
+                    rpIds+=$(this).attr('data-rpid');
+                    if(i<len-1){
+                        rpIds+=',';
+                    }
+                });
+                changeMutilGroup(rpIds);
+            }
+        });
+        form.on('submit(mutilSpec)', function (data) { mutilSpec();});
+        form.on('submit(saveGroupInfo)', function (data) {
+            //var _isSubmit=true;
+            if($.trim($('#address').val()).length==0){
+                layer.msg("请输入评审地点", { icon: 5 });
+                return;
+            }
+            if($.trim($('#amStart').val()).length<10){
+                layer.msg("请选择上午评审时间", { icon: 5 });
+                return;
+            }
+            if($.trim($('#pmStart').val()).length<10){
+                layer.msg("请选择下午评审时间", { icon: 5 });
+                return;
+            }
+            var $data={
+                'id':[[${reviewGroup.id}]],
+                'address':$.trim($('#address').val()),
+                'amStartTime':$.trim($('#amStart').val().split('-')[0]),
+                'amEndTime':$.trim($('#amStart').val().split('-')[1]),
+                'pmStartTime':$.trim($('#pmStart').val().split('-')[0]),
+                'pmEndTime':$.trim($('#pmStart').val().split('-')[1])
+            }
+            $.ajax({
+                type: "post",
+                url: "/review/group/groupInfoSave",
+                data: $data,
+                dataType:'json',
+                success:function (ret) {
+                    if (ret.code == 0) {
+                        layui.layer.msg('评审组信息保存成功', {icon: 6});
+                    } else {
+                        layer.alert("保存评审组信息失败<br/>"+data.msg, { icon: 2 });
+                    }
+                },
+                error:function (data) {
+                    layer.alert("保存评审组信息失败<br/>"+JSON.stringify(data), { icon: 2 });
+                }
+            });
+        });
+
+        laydate.render({elem: '#amStart'  ,type: 'time', range: true });
+        laydate.render({ elem: '#pmStart',type: 'time',range: true});
+        laydate.render({elem: '#end'});
+
+        loadProductTable();
+        loadSpecTable();
+    });
+
+    function loadProductTable(){
+        var loadLay;
+        $.ajax({
+            type: "post",
+            url: "/review/group/group_product/[[${currentGroupId}]]",
+            data: {'territoryId':$('#territoryId').val(),'typeId':$('#typeId').val(),'userName':$('#userName').val()},
+            dataType:'json',
+            beforeSend: function(){
+                loadLay=layer.load(1, {shade: [0.1,'#fff'] });
+            },
+            success:function (ret) {
+                if (ret.code == 0) {
+                    let _tr='';
+                    if(ret.data){
+                        $.each(ret.data,function(i,item){
+                            _tr+='<tr>';
+                            _tr+='<td><input type="checkbox" name="checkContent" data-rpid="'+item.reviewProductId+'" lay-skin="primary"></td>'
+                            _tr+='<td>'+item.userName+'</td>';
+                            _tr+='<td>'+(item.sex==0?'女':'男')+'</td>';
+                            _tr+='<td>'+(item.workCompany||'-')+'</td>';
+                            _tr+='<td>'+item.productName+'</td>';
+                            _tr+='<td>'+item.typeName+'</td>';
+                            _tr+='<td>'+item.territoryName+'</td>';
+                            _tr+='<td>'+item.majorField+'</td>';
+                            _tr+='<td>'+(item.recommend||'-')+'</td>';
+                            _tr+='<td>'+item.groupOfSort+'</td>';
+                            _tr+='<td> <a title="调整分组" onclick="changeGroup('+item.groupOfSort+','+item.reviewProductId+')" href="javascript:;"><i class="layui-icon">&#xe642;</i>调整</a></td>'
+                            _tr+='</tr>';
+                        });
+                    }
+                    $('#productBody').html(_tr);
+                    form.render('checkbox');
+                } else {
+                    layer.alert("获取组内项目列表失败<br/>"+data.msg, { icon: 2 });
+                }
+            },
+            error:function (data) {
+                layer.alert("获取组内项目列表失败<br/>"+JSON.stringify(data), { icon: 2 });
+            },
+            complete: function(){
+                if(loadLay){
+                    layer.close(loadLay);
+                    loadLay=undefined;
+                }
+            }
+        });
+    }
+
+    function loadSpecTable(){
+        $.ajax({
+            type: "post",
+            url: "/review/group/group_spec/[[${currentGroupId}]]",
+            data: {},
+            dataType:'json',
+            success:function (ret) {
+                if (ret.code == 0) {
+                    let _tr='';
+                    if(ret.data){
+                        $.each(ret.data,function(i,item){
+                            _tr+='<tr>';
+                            _tr+='<td>'+(i+1)+'</td>';
+                            _tr+='<td>'+item.userName+'</td>';
+                            _tr+='<td>'+item.company+'</td>';
+                            _tr+='<td>'+item.rank+'</td>';
+                            _tr+='<td>'+item.titleName+'</td>';
+                            _tr+='<td>'+item.territoryName+'</td>';
+                            _tr+='<td>'+item.specTypeName+'</td>';
+                            _tr+='<td>'+item.level+'</td>';
+                            _tr+='<td> <a title="移除" onclick="removeSpec(\''+item.userName+'\','+item.id+','+item.reviewSpeciaId+')" href="javascript:;"><i class="layui-icon">&#x1006;</i>移除</a></td>'
+                            _tr+='</tr>';
+                        });
+                    }
+                    $('#specBody').html(_tr);
+                } else {
+                    layer.alert("获取组内专家列表失败<br/>"+data.msg, { icon: 2 });
+                }
+            },
+            error:function (data) {
+                layer.alert("获取组内专家列表失败<br/>"+JSON.stringify(data), { icon: 2 });
+            }
+        });
+    }
+
+    function onpage(pageNumber) {
+        $("#pageNumber").val(pageNumber);
+        console.log("pageNumber:"+pageNumber)
+        $("#from_serach").submit();
+    };
+
+
+    function changeGroup(_sort,_rp) {
+        xadmin.open('项目调整','./groupChangeSingle?groupId=[[${currentGroupId}]]&batchId=[[${batchId}]]&reviewProductId='+_rp+'&sort='+_sort,800,600);
+    }
+
+    function changeMutilGroup(_rp) {
+        xadmin.open('批量项目调整','./groupChangeMutil?groupId=[[${currentGroupId}]]&batchId=[[${batchId}]]&reviewProductIds='+_rp,800,600);
+    }
+
+    function removeSpec(_name,_id,_rpid){
+        layer.confirm('确认要移除专家('+_name+')吗？',function(index){
+            $.ajax({
+                type: "POST",
+                url: "./groupSpecRemove?groupId=[[${currentGroupId}]]&batchId=[[${batchId}]]&reviewProductId="+_rpid+"&specId="+_id,
+                data:{},
+                dataType:'json',
+                success:function (data) {
+                    if (data.code == 0) {
+                        layui.layer.msg('专家('+_name+')成功移除', {icon: 6});
+                        loadSpecTable();
+                    } else {
+                        layer.alert('专家('+_name+')移除失败', { icon: 2});
+                    }
+                },
+                error:function (data) {
+                    layer.alert("提交失败"+JSON.stringify(data));
+                }
+            });
+            return false;
+        });
+    }
+
+    function mutilSpec(){
+        xadmin.open('批量加入专家','./groupSpecJoin?groupId=[[${currentGroupId}]]&batchId=[[${batchId}]]',1024,640);
+    }
+
+
+</script>
+</html>

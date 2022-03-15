@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hsmap.yuezhihui.mapper.core.CoreTemplateRelationMapper">
+  <resultMap id="BaseResultMap" type="com.hsmap.yuezhihui.entity.core.CoreTemplateRelation">
+    <id column="code" jdbcType="VARCHAR" property="code" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+    <result column="download_name" jdbcType="VARCHAR" property="downloadName" />
+    <result column="describes" jdbcType="VARCHAR" property="describes" />
+    <result column="role_ids" jdbcType="VARCHAR" property="roleIds" />
+  </resultMap>
+
+  <select id="findByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from core_template_relation where code = #{code}
+  </select>
+</mapper>

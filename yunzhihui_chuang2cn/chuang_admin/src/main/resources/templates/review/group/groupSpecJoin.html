@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+    <title>专家库选中</title>
+</head>
+
+<body>
+<div th:replace="common/child_nav :: child_nav">
+
+</div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5" id="from_serach">
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <select name="territoryId" id="territoryId">
+                                <option value="0">选择专业领域</option>
+                                <option th:selected="${item.id} eq ${query.territoryId}" th:each="item:${coreTerritory}" th:value="${item.id}" th:text="${item.name}"></option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <select name="titleId" id="titleId">
+                                <option value="0">选择职称</option>
+                                <option th:selected="${item.id} eq ${query.titleId}" th:each="item:${coreTitle}" th:value="${item.id}" th:text="${item.name}"></option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <select name="specTypeId" id="specTypeId">
+                                <option value="0">选择专业类别</option>
+                                <option th:selected="${item.id} eq ${query.specTypeId}" th:each="item:${coreSpecType}" th:value="${item.id}" th:text="${item.name}"></option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <select name="level" id="level">
+                                <option value="0">选择星级</option>
+                                <option value="1">1星</option>
+                                <option value="2">2星</option>
+                                <option value="3">3星</option>
+                                <option value="4">4星</option>
+                                <option value="5">5星</option>
+                            </select>
+                        </div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input type="text" name="userName" id="userName" th:value="${query.userName}" placeholder="请输入专家姓名" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input th:value="${batchId}" name="batchId" id="batchId" type="hidden"/>
+                            <input th:value="${groupId}" name="groupId" id="groupId" type="hidden"/>
+                            <input th:value="${pageInfo.number}" name="pageNumber" id="pageNumber" value="0" type="hidden"/>
+                            <button class="layui-btn" lay-submit="" lay-filter="search">
+                                <i class="layui-icon">&#xe615;</i>查询</button>
+                            <button class="layui-btn layui-btn-normal" lay-filter="add" lay-submit="">
+                                <i class="layui-icon">&#x1005;</i>确定</button>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="layui-card-body layui-table-body layui-table-main">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" lay-filter="checkall" name="" lay-skin="primary">
+                            </th>
+                            <th>序号</th>
+                            <th>姓名</th>
+                            <th>年龄</th>
+                            <th>性别</th>
+                            <th>单位</th>
+                            <th>职位</th>
+                            <th>职称</th>
+                            <th>联系电话</th>
+                            <th>专业领域</th>
+                            <th>细分领域</th>
+                            <th>专家类别</th>
+                            <th>评价星级</th>
+                            <th>备注</th>
+                        </thead>
+                        <tbody>
+                        <tr th:each="model,stat:${pageInfo.content}">
+                            <td>
+                                <input type="checkbox" name="checkContent"  th:value="${model.reviewBatchSpecId}+'-'+${model.id}"   lay-skin="primary">
+                            </td>
+                            <td th:text="${stat.count}">0</td>
+                            <td th:text="${model.userName}"></td>
+                            <td th:text="${model.age}"></td>
+                            <td th:text="${model.sex}==0?'女':'男'"></td>
+                            <td th:text="${model.company}"></td>
+                            <td th:text="${model.rank}"></td>
+                            <td th:text="${model.titleName}"></td>
+                            <td th:text="${model.mobile}"></td>
+                            <td th:text="${model.territoryName}"></td>
+                            <td th:text="${model.subdivision}"></td>
+                            <td th:text="${model.specTypeName}"></td>
+                            <td th:text="${model.level}"></td>
+                            <td th:text="${model.remark}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-body ">
+                    <div class="page">
+                        <div th:replace="common/pageinfo :: pageinfo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['laydate','form'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+        var $ = layui.jquery;
+        var batchId=$("#id").val();
+        // 监听全选
+        form.on('checkbox(checkall)', function(data){
+            if(data.elem.checked){
+                $('tbody input').prop('checked',true);
+            }else{
+                $('tbody input').prop('checked',false);
+            }
+            form.render('checkbox');
+        });
+
+        form.on('submit(search)', function (data) {
+            $("#pageNumber").val(1);
+            $("#batchId").val();
+            $("#from_serach").submit();
+            return false;
+        });
+        //监听提交
+        form.on('submit(add)',
+            function (data) {
+                let chkcnt = $(':checkbox[name=checkContent]:checked');
+                let len = chkcnt.length;
+                var rpIds = '';
+                if(len==0){
+                    layer.msg("请勾选专家", { icon: 5 });
+                }else{
+                    $.each(chkcnt,function(i,item){
+                        rpIds+=$(this).val();
+                        if(i<len-1){
+                            rpIds+=',';
+                        }
+                    });
+                }
+
+                    $.ajax({
+                        type: "POST",
+                        url: "./groupSpecJoinSave?groupId=[[${groupId}]]&batchId=[[${batchId}]]",
+                        data: {'reviewSpecIds':rpIds},
+                        dataType:'json',
+                        success:function (data) {
+                            if (data.code == 0) {
+                                layui.layer.alert("加入专家成功", {icon: 6},function () {xadmin.close();parent.loadSpecTable();});
+                            } else {
+                                layer.alert("加入专家失败", {icon: 2},function () {});
+                            }
+                        },
+                        error:function (data) {
+                            alert("提交失败"+JSON.stringify(data));
+                        }
+                    });
+
+                return false;
+            });
+    });
+
+
+</script>
+</html>

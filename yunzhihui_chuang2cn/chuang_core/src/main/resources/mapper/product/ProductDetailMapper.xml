@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hsmap.yuezhihui.mapper.product.ProductDetailMapper">
+  <resultMap id="BaseResultMap" type="com.hsmap.yuezhihui.entity.product.ProductDetail">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="product_id" jdbcType="INTEGER" property="productId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+    <result column="sort_" jdbcType="INTEGER" property="sort" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="remark_" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.hsmap.yuezhihui.entity.product.ProductDetail">
+    <result column="cover_" jdbcType="LONGVARCHAR" property="cover" />
+    <result column="basic_info" jdbcType="LONGVARCHAR" property="basicInfo" />
+    <result column="product_plan" jdbcType="LONGVARCHAR" property="productPlan" />
+    <result column="opinion_" jdbcType="LONGVARCHAR" property="opinion" />
+    <result column="accessory_" jdbcType="LONGVARCHAR" property="accessory" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, product_id, user_name, product_name, is_del, sort_, create_time, remark_
+  </sql>
+  <sql id="Blob_Column_List">
+    cover_, basic_info, product_plan, opinion_, accessory_
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.hsmap.yuezhihui.entity.product.ProductDetailExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from product_detail
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="pageNumber>0">
+      limit ${(pageNumber-1)*pageSize},${pageSize}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.hsmap.yuezhihui.entity.product.ProductDetailExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from product_detail
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from product_detail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from product_detail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.hsmap.yuezhihui.entity.product.ProductDetailExample">
+    delete from product_detail
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.hsmap.yuezhihui.entity.product.ProductDetail">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into product_detail (product_id, user_name, product_name,
+      is_del, sort_, create_time,
+      remark_, cover_, basic_info,
+      product_plan, opinion_, accessory_
+      )
+    values (#{productId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR},
+      #{isDel,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+      #{remark,jdbcType=VARCHAR}, #{cover,jdbcType=LONGVARCHAR}, #{basicInfo,jdbcType=LONGVARCHAR},
+      #{productPlan,jdbcType=LONGVARCHAR}, #{opinion,jdbcType=LONGVARCHAR}, #{accessory,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hsmap.yuezhihui.entity.product.ProductDetail">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into product_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="productName != null">
+        product_name,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+      <if test="sort != null">
+        sort_,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="remark != null">
+        remark_,
+      </if>
+      <if test="cover != null">
+        cover_,
+      </if>
+      <if test="basicInfo != null">
+        basic_info,
+      </if>
+      <if test="productPlan != null">
+        product_plan,
+      </if>
+      <if test="opinion != null">
+        opinion_,
+      </if>
+      <if test="accessory != null">
+        accessory_,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="productId != null">
+        #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="cover != null">
+        #{cover,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="basicInfo != null">
+        #{basicInfo,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="productPlan != null">
+        #{productPlan,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="opinion != null">
+        #{opinion,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="accessory != null">
+        #{accessory,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.hsmap.yuezhihui.entity.product.ProductDetailExample" resultType="java.lang.Long">
+    select count(*) from product_detail
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update product_detail
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.productId != null">
+        product_id = #{record.productId,jdbcType=INTEGER},
+      </if>
+      <if test="record.userName != null">
+        user_name = #{record.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.productName != null">
+        product_name = #{record.productName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isDel != null">
+        is_del = #{record.isDel,jdbcType=INTEGER},
+      </if>
+      <if test="record.sort != null">
+        sort_ = #{record.sort,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.remark != null">
+        remark_ = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cover != null">
+        cover_ = #{record.cover,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.basicInfo != null">
+        basic_info = #{record.basicInfo,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.productPlan != null">
+        product_plan = #{record.productPlan,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.opinion != null">
+        opinion_ = #{record.opinion,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.accessory != null">
+        accessory_ = #{record.accessory,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update product_detail
+    set id = #{record.id,jdbcType=INTEGER},
+      product_id = #{record.productId,jdbcType=INTEGER},
+      user_name = #{record.userName,jdbcType=VARCHAR},
+      product_name = #{record.productName,jdbcType=VARCHAR},
+      is_del = #{record.isDel,jdbcType=INTEGER},
+      sort_ = #{record.sort,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      remark_ = #{record.remark,jdbcType=VARCHAR},
+      cover_ = #{record.cover,jdbcType=LONGVARCHAR},
+      basic_info = #{record.basicInfo,jdbcType=LONGVARCHAR},
+      product_plan = #{record.productPlan,jdbcType=LONGVARCHAR},
+      opinion_ = #{record.opinion,jdbcType=LONGVARCHAR},
+      accessory_ = #{record.accessory,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update product_detail
+    set id = #{record.id,jdbcType=INTEGER},
+      product_id = #{record.productId,jdbcType=INTEGER},
+      user_name = #{record.userName,jdbcType=VARCHAR},
+      product_name = #{record.productName,jdbcType=VARCHAR},
+      is_del = #{record.isDel,jdbcType=INTEGER},
+      sort_ = #{record.sort,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      remark_ = #{record.remark,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hsmap.yuezhihui.entity.product.ProductDetail">
+    update product_detail
+    <set>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null">
+        sort_ = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark_ = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="cover != null">
+        cover_ = #{cover,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="basicInfo != null">
+        basic_info = #{basicInfo,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="productPlan != null">
+        product_plan = #{productPlan,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="opinion != null">
+        opinion_ = #{opinion,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="accessory != null">
+        accessory_ = #{accessory,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.hsmap.yuezhihui.entity.product.ProductDetail">
+    update product_detail
+    set product_id = #{productId,jdbcType=INTEGER},
+      user_name = #{userName,jdbcType=VARCHAR},
+      product_name = #{productName,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=INTEGER},
+      sort_ = #{sort,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      remark_ = #{remark,jdbcType=VARCHAR},
+      cover_ = #{cover,jdbcType=LONGVARCHAR},
+      basic_info = #{basicInfo,jdbcType=LONGVARCHAR},
+      product_plan = #{productPlan,jdbcType=LONGVARCHAR},
+      opinion_ = #{opinion,jdbcType=LONGVARCHAR},
+      accessory_ = #{accessory,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hsmap.yuezhihui.entity.product.ProductDetail">
+    update product_detail
+    set product_id = #{productId,jdbcType=INTEGER},
+      user_name = #{userName,jdbcType=VARCHAR},
+      product_name = #{productName,jdbcType=VARCHAR},
+      is_del = #{isDel,jdbcType=INTEGER},
+      sort_ = #{sort,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      remark_ = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

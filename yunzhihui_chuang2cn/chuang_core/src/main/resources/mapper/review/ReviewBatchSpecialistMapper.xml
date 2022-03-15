@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hsmap.yuezhihui.mapper.review.ReviewBatchSpecialistMapper">
+  <resultMap id="BaseResultMap" type="com.hsmap.yuezhihui.entity.review.ReviewBatchSpecialist">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="spec_id" jdbcType="INTEGER" property="specId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="spec_name" jdbcType="VARCHAR" property="specName" />
+    <result column="batch_id" jdbcType="INTEGER" property="batchId" />
+    <result column="batch_name" jdbcType="VARCHAR" property="batchName" />
+    <result column="territory_id" jdbcType="INTEGER" property="territoryId" />
+    <result column="territory_name" jdbcType="VARCHAR" property="territoryName" />
+    <result column="is_use" jdbcType="INTEGER" property="isUse" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
+    <result column="sort_" jdbcType="INTEGER" property="sort" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="remark_" jdbcType="VARCHAR" property="remark" />
+    <result column="spec_type_id" jdbcType="INTEGER" property="specTypeId" />
+    <result column="level_" jdbcType="INTEGER" property="level" />
+    <result column="company_" jdbcType="VARCHAR" property="company" />
+    <result column="rank_" jdbcType="VARCHAR" property="rank" />
+    <result column="title_name" jdbcType="VARCHAR" property="titleName" />
+    <result column="spec_type_name" jdbcType="VARCHAR" property="specTypeName" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    v.id ,v.spec_id,v.batch_id,v.spec_name,v.batch_name,v.territory_id,v.is_use,v.is_del,v.sort_,v.create_time,v.remark_,v.spec_type_id,s.user_name,s.company_, s.rank_,s.title_id,
+     s.level_,
+    b.name_ as title_name ,c.name_ as territory_name,d.name_ as spec_type_name
+  </sql>
+  <select id="selectByExample" parameterType="com.hsmap.yuezhihui.entity.review.ReviewBatchSpecialistExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    FROM  review_batch_specialist v
+    LEFT JOIN review_batch r on r.id=v.batch_id
+    LEFT JOIN spec_info s on s.id = v.spec_id
+    left join core_title b on s.title_id = b.id
+    left join core_territory c on s.territory_id = c.id
+    left join core_spec_type d on s.spec_type_id = d.id
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="pageNumber>0">
+      limit ${(pageNumber-1)*pageSize},${pageSize}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    FROM  review_batch_specialist v
+    LEFT JOIN review_batch r on r.id=v.batch_id
+    LEFT JOIN spec_info s on s.id = v.spec_id
+    left join core_title b on s.title_id = b.id
+    left join core_territory c on s.territory_id = c.id
+    left join core_spec_type d on s.spec_type_id = d.id
+    where v.id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from review_batch_specialist
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.hsmap.yuezhihui.entity.review.ReviewBatchSpecialistExample">
+    delete from review_batch_specialist
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.hsmap.yuezhihui.entity.review.ReviewBatchSpecialist">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into review_batch_specialist (spec_id, spec_name, batch_id,
+      batch_name, territory_id, territory_name,
+      is_use, is_del, sort_,
+      create_time, remark_, spec_type_id,
+      spec_type_name)
+    values (#{specId,jdbcType=INTEGER}, #{specName,jdbcType=VARCHAR}, #{batchId,jdbcType=INTEGER},
+      #{batchName,jdbcType=VARCHAR}, #{territoryId,jdbcType=INTEGER}, #{territoryName,jdbcType=VARCHAR},
+      #{isUse,jdbcType=INTEGER}, #{isDel,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER},
+      #{createTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{specTypeId,jdbcType=INTEGER},
+      #{specTypeName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hsmap.yuezhihui.entity.review.ReviewBatchSpecialist">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into review_batch_specialist
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="specId != null">
+        spec_id,
+      </if>
+      <if test="specName != null">
+        spec_name,
+      </if>
+      <if test="batchId != null">
+        batch_id,
+      </if>
+      <if test="batchName != null">
+        batch_name,
+      </if>
+      <if test="territoryId != null">
+        territory_id,
+      </if>
+      <if test="territoryName != null">
+        territory_name,
+      </if>
+      <if test="isUse != null">
+        is_use,
+      </if>
+      <if test="isDel != null">
+        is_del,
+      </if>
+      <if test="sort != null">
+        sort_,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="remark != null">
+        remark_,
+      </if>
+      <if test="specTypeId != null">
+        spec_type_id,
+      </if>
+      <if test="specTypeName != null">
+        spec_type_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="specId != null">
+        #{specId,jdbcType=INTEGER},
+      </if>
+      <if test="specName != null">
+        #{specName,jdbcType=VARCHAR},
+      </if>
+      <if test="batchId != null">
+        #{batchId,jdbcType=INTEGER},
+      </if>
+      <if test="batchName != null">
+        #{batchName,jdbcType=VARCHAR},
+      </if>
+      <if test="territoryId != null">
+        #{territoryId,jdbcType=INTEGER},
+      </if>
+      <if test="territoryName != null">
+        #{territoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="isUse != null">
+        #{isUse,jdbcType=INTEGER},
+      </if>
+      <if test="isDel != null">
+        #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="specTypeId != null">
+        #{specTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="specTypeName != null">
+        #{specTypeName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.hsmap.yuezhihui.entity.review.ReviewBatchSpecialistExample" resultType="java.lang.Long">
+    select count(*) FROM  review_batch_specialist v
+    LEFT JOIN review_batch r on r.id=v.batch_id
+    LEFT JOIN spec_info s on s.id = v.spec_id
+    left join core_title b on s.title_id = b.id
+    left join core_territory c on s.territory_id = c.id
+    left join core_spec_type d on s.spec_type_id = d.id
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update review_batch_specialist
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.specId != null">
+        spec_id = #{record.specId,jdbcType=INTEGER},
+      </if>
+      <if test="record.specName != null">
+        spec_name = #{record.specName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.batchId != null">
+        batch_id = #{record.batchId,jdbcType=INTEGER},
+      </if>
+      <if test="record.batchName != null">
+        batch_name = #{record.batchName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.territoryId != null">
+        territory_id = #{record.territoryId,jdbcType=INTEGER},
+      </if>
+      <if test="record.territoryName != null">
+        territory_name = #{record.territoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isUse != null">
+        is_use = #{record.isUse,jdbcType=INTEGER},
+      </if>
+      <if test="record.isDel != null">
+        is_del = #{record.isDel,jdbcType=INTEGER},
+      </if>
+      <if test="record.sort != null">
+        sort_ = #{record.sort,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.remark != null">
+        remark_ = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.specTypeId != null">
+        spec_type_id = #{record.specTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="record.specTypeName != null">
+        spec_type_name = #{record.specTypeName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update review_batch_specialist
+    set id = #{record.id,jdbcType=INTEGER},
+      spec_id = #{record.specId,jdbcType=INTEGER},
+      spec_name = #{record.specName,jdbcType=VARCHAR},
+      batch_id = #{record.batchId,jdbcType=INTEGER},
+      batch_name = #{record.batchName,jdbcType=VARCHAR},
+      territory_id = #{record.territoryId,jdbcType=INTEGER},
+      territory_name = #{record.territoryName,jdbcType=VARCHAR},
+      is_use = #{record.isUse,jdbcType=INTEGER},
+      is_del = #{record.isDel,jdbcType=INTEGER},
+      sort_ = #{record.sort,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      remark_ = #{record.remark,jdbcType=VARCHAR},
+      spec_type_id = #{record.specTypeId,jdbcType=INTEGER},
+      spec_type_name = #{record.specTypeName,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hsmap.yuezhihui.entity.review.ReviewBatchSpecialist">
+    update review_batch_specialist
+    <set>
+      <if test="specId != null">
+        spec_id = #{specId,jdbcType=INTEGER},
+      </if>
+      <if test="specName != null">
+        spec_name = #{specName,jdbcType=VARCHAR},
+      </if>
+      <if test="batchId != null">
+        batch_id = #{batchId,jdbcType=INTEGER},
+      </if>
+      <if test="batchName != null">
+        batch_name = #{batchName,jdbcType=VARCHAR},
+      </if>
+      <if test="territoryId != null">
+        territory_id = #{territoryId,jdbcType=INTEGER},
+      </if>
+      <if test="territoryName != null">
+        territory_name = #{territoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="isUse != null">
+        is_use = #{isUse,jdbcType=INTEGER},
+      </if>
+      <if test="isDel != null">
+        is_del = #{isDel,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null">
+        sort_ = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark_ = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="specTypeId != null">
+        spec_type_id = #{specTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="specTypeName != null">
+        spec_type_name = #{specTypeName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hsmap.yuezhihui.entity.review.ReviewBatchSpecialist">
+    update review_batch_specialist
+    set spec_id = #{specId,jdbcType=INTEGER},
+      spec_name = #{specName,jdbcType=VARCHAR},
+      batch_id = #{batchId,jdbcType=INTEGER},
+      batch_name = #{batchName,jdbcType=VARCHAR},
+      territory_id = #{territoryId,jdbcType=INTEGER},
+      territory_name = #{territoryName,jdbcType=VARCHAR},
+      is_use = #{isUse,jdbcType=INTEGER},
+      is_del = #{isDel,jdbcType=INTEGER},
+      sort_ = #{sort,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      remark_ = #{remark,jdbcType=VARCHAR},
+      spec_type_id = #{specTypeId,jdbcType=INTEGER},
+      spec_type_name = #{specTypeName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--  批次ID和专家ID更新专家的使用标志-->
+  <update id="updateUseByBatchIdAndSpecId" parameterType="com.hsmap.yuezhihui.entity.review.ReviewBatchSpecialist">
+    update review_batch_specialist set is_use = #{isUse,jdbcType=INTEGER}
+    where batch_id = #{batchId,jdbcType=INTEGER} AND spec_id = #{specId,jdbcType=INTEGER}
+  </update>
+</mapper>

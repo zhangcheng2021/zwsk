@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+<head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+    <title>评审批次管理</title>
+</head>
+
+<body>
+    <div th:replace="common/child_nav :: child_nav">
+
+    </div>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">
+<!--                    <button class="layui-btn layui-btn-danger" onclick="delAll()"><i class="layui-icon"></i>批量删除</button>-->
+                    <button class="layui-btn" onclick="xadmin.open('添加评审批次','./addInput',800,600)"><i class="layui-icon">&#xe654;</i>添加</button>
+                </div>
+                <div class="layui-card-body layui-table-body layui-table-main">
+                    <table class="layui-table layui-form">
+                        <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>详审批次名称</th>
+                            <th>评审日期</th>
+                            <th>评审地点</th>
+                            <th>状态</th>
+                            <th>专家数</th>
+                            <th>备注</th>
+                            <th>操作</th></tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="model,stat:${pageInfo.content}">
+<!--                            <td>-->
+<!--                                <input type="checkbox" name="id" value="1"   lay-skin="primary">-->
+<!--                            </td>-->
+                            <td th:text="${stat.count}">0</td>
+                            <td th:text="${model.name}"></td>
+                            <td th:text="${#dates.format(model.reviewDate,'yyyy-MM-dd')}"></td>
+                            <td th:text="${model.address}"></td>
+<!--                            <td th:text="${model.status}"></td>-->
+                            <td class="td-status" th:if="${model.status} eq 0">
+                                <span class="layui-btn layui-btn-normal layui-btn-mini">筹备中</span>
+                            </td>
+                            <td class="td-status" th:if="${model.status} eq 1">
+                                <span class="layui-btn layui-btn-danger layui-btn-mini">正在评审</span>
+                            </td>
+                            <td class="td-status" th:if="${model.status} eq 2">
+                                <span class="layui-btn layui-btn-normal layui-btn-mini layui-btn-disabled">评审结束</span>
+                            </td>
+                            <td th:text="${model.specCount}"></td>
+                            <td th:text="${model.remark}"></td>
+
+                            <td class="td-manage">
+                                <a title="编辑"  th:if="${model.status eq 0}" th:onclick="editInput([[${model.id}]])" href="javascript:;">
+                                    <i class="layui-icon">&#xe642;</i>编辑
+                                </a>
+
+
+                                <a title="开始审核" th:if="${model.status eq 0 && model.specCount > 0}" th:onclick="startReviewInput([[${model.id}]])" href="javascript:void(0);">
+                                    <i class="layui-icon">&#xe63c;</i>开始审核
+                                </a>
+
+                                <a title="专家管理" th:if="${model.status eq 0}" th:onclick="specListInput([[${model.id}]])" href="javascript:void(0);">
+                                    <i class="layui-icon">&#xe613;</i>专家管理
+                                </a>
+
+                                <a title="重新筹备" th:if="${model.status eq 1}" th:onclick="batchRestart([[${model.id}]])" href="javascript:void(0);">
+                                    <i class="layui-icon">&#xe60e;</i>重新筹备
+                                </a>
+                                <a title="完成评审" th:if="${model.status eq 1}" th:onclick="batchSuccess([[${model.id}]])" href="javascript:void(0);">
+                                    <i class="layui-icon">&#x1005;</i>完成评审
+                                </a>
+
+                                <a title="删除" th:if="${model.isDel eq 0}" th:onclick="batchDel([[${model.id}]])" href="javascript:void(0);">
+                                    <i class="layui-icon">&#xe640;</i>删除
+                                </a>
+
+                                <a title="评审结果下载" th:if="${model.isDel eq 0}" th:onclick="downloadPage([[${model.id}]])" href="javascript:void(0);">
+                                    <i class="layui-icon">&#xe601;</i>评审结果下载
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="layui-card-body ">
+                    <div class="page">
+                        <div th:replace="common/pageinfo :: pageinfo">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    layui.use(['laydate','form'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+        var $ = layui.jquery;
+        // 监听全选
+        form.on('checkbox(checkall)', function(data){
+
+            if(data.elem.checked){
+                $('tbody input').prop('checked',true);
+            }else{
+                $('tbody input').prop('checked',false);
+            }
+            form.render('checkbox');
+        });
+
+        form.on('submit(sreach)', function (data) {
+            console.log("sreach.....");
+
+            //form.submit();
+            $("#pageNumber").val(1);
+            $("#from_serach").submit();
+            return false;
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#start' //指定元素
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#end' //指定元素
+        });
+
+
+
+    });
+
+    function onpage(pageNumber) {
+        $("#pageNumber").val(pageNumber);
+        console.log("pageNumber:"+pageNumber)
+
+        $("#from_serach").submit();
+
+
+    };
+
+
+
+
+    function editInput(id) {
+        xadmin.open('编辑审核批次','./editInput?id='+id,800,600);
+
+    }
+     function downloadPage(id){
+         xadmin.open('评审结果统计下载','./downloadPage/'+id,340,300);
+     }
+
+    function startReviewInput(id) {
+        xadmin.open('开始审核','./startInput?id='+id,1000,600);
+    }
+    function specListInput(id){
+        xadmin.open('专家列表','./specListInput?id='+id,1000,600);
+    }
+
+    function batchSuccess(batchId){
+         layer.confirm('确认要结束评审吗？',function(index){
+             $.ajax({
+                type: "POST",
+                url: "./specEndInput?id="+batchId,
+                data:{},
+                headers : {"content-type" : "application/json;charset=UTF-8"},
+                dataType:'json',
+                success:function (data) {
+                    if (data.code == 0) {
+                        location.reload();
+                    } else {
+                        layer.alert("结束评审失败", {icon: 2});
+                    }
+                }
+             });
+         });
+    }
+    function batchDel(batchId){
+         layer.confirm('确认要删除批次吗？',function(index){
+             $.ajax({
+                type: "POST",
+                url: "./specDeleteInput?id="+batchId,
+                data:{},
+                headers : {"content-type" : "application/json;charset=UTF-8"},
+                dataType:'json',
+                success:function (data) {
+                    if (data.code == 0) {
+                        location.reload();
+                    } else {
+                        layer.alert("删除批次失败", {icon: 2});
+                    }
+                }
+             });
+         });
+    }
+</script>
+</html>

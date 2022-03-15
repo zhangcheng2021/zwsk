@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+    <head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+        <title>申报审核详情</title>
+    </head>
+
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space10">
+                <div class="layui-col-sm6">
+                    <label class="layui-form-label" th:text="'项目名称：'+${detail.productName}" style="width: 100%;text-align: left;"></label>
+                </div>
+                <div class="layui-col-sm6">
+                    <label class="layui-form-label" th:text="'申报单位：'+${detail.workCompany}" style="width: 100%;text-align: left;"></label>
+                </div>
+                <div class="layui-col-sm6">
+                    <label class="layui-form-label" th:text="'专业领域：'+${detail.territoryName}" style="width: 100%;text-align: left;"></label>
+                </div>
+                <div class="layui-col-sm6">
+                    <label class="layui-form-label" th:text="'人才类型：'+${detail.typeName}" style="width: 100%;text-align: left;"></label>
+                </div>
+                <div class="layui-col-sm6">
+                    <label class="layui-form-label" th:text="'专业方向：'+${detail.majorField}" style="width: 100%;text-align: left;"></label>
+                </div>
+                <div class="layui-col-sm6">
+                    <label class="layui-form-label" th:text="'推荐地：'+${detail.recommend}" style="width: 100%;text-align: left;"></label>
+                </div>
+                <div class="layui-col-sm12">
+                    <div class="layui-card">
+                        <div class="layui-card-body">
+                            <div class="layui-tab layui-tab-card">
+                                <ul class="layui-tab-title">
+                                    <li class="layui-this">申报书封面</li>
+                                    <li>基本信息</li>
+                                    <li>项目实施计划</li>
+                                    <li>用人单位意见</li>
+                                    <li>附件材料</li>
+                                </ul>
+                                <div class="layui-tab-content">
+                                    <div class="layui-tab-item layui-show">
+                                        申报书封面
+                                    </div>
+                                    <div class="layui-tab-item">Tab基本信息</div>
+                                    <div class="layui-tab-item">Tab项目实施计划</div>
+                                    <div class="layui-tab-item">Tab用人单位意见</div>
+                                    <div class="layui-tab-item">Tab附件材料</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+        layui.use(['form', 'layer', 'jquery'],function () {
+            $ = layui.jquery;
+            var form = layui.form,layer = layui.layer;
+        });
+        </script>
+
+    </body>
+
+</html>

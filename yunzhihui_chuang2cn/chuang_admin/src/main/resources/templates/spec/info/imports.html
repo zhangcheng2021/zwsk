@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" class="x-admin-sm">
+    <head th:replace="common/header :: common_header(~{::title},~{::link},~{})">
+        <title>导入专家管理</title>
+    </head>
+
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row">
+                <form class="layui-form layui-col-space5">
+                    <div class="layui-input-inline" style="width:25%">
+                        <label for="taskName" class="">
+                            <span class="x-red">*</span>任务名称
+                        </label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="taskName" name="taskName" maxlength="64" placeholder="请输入任务名称" lay-verify="required"  autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-input-inline" style="width:38.8%">
+                        <label for="taskFile" class="">
+                            <span class="x-red">*</span>选择文件
+                        </label>
+                        <div class="layui-input-inline" >
+                            <input type="file" name="file" id="upload-primary" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" >
+                            <input type="hidden" name="taskFile" id="taskFile">
+                            <span id="fileShow"></span>
+                        </div>
+                    </div>
+                    <div class="layui-input-inline ">
+                        <button class="layui-btn" lay-filter="add" lay-submit="">提交导入</button>
+                    </div>
+                </form>
+            </div>
+            <div class="layui-card-body layui-table-body layui-table-main">
+                <table class="layui-table layui-form">
+                    <thead>
+                    <tr>
+                        <th>任务名称</th>
+                        <th style="width: 100px;">导入行数</th>
+                        <th style="width: 100px;">成功行数</th>
+                        <th style="width: 100px;">失败行数</th>
+                        <th style="width: 120px;">导入时间</th>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item,stat:${taskInfoList}">
+                        <td th:text="${item.name}"></td>
+                        <td th:text="${item.totalCount}"></td>
+                        <td th:text="${item.successCount}"></td>
+                        <td th:text="${item.errorCount}"></td>
+                        <td th:text="${#dates.format(item.createTime,'yyyy-MM-dd HH:mm')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script>layui.use(['form', 'layer', 'jquery', 'upload'],
+            function () {
+                $ = layui.jquery;
+                var form = layui.form,layer = layui.layer,upload = layui.upload;
+                upload.render({
+                  elem: '#upload-primary'
+                  ,url: '/common/upload'
+                  ,exts: 'xls|xlsx'
+                  ,done: function(res){
+                    if(res.code==0){
+                        $('#upload-primary').hide();
+                        $('#taskFile').val(res.data.savePath);
+                        $('#fileShow').text(res.data.originalFilename+',已成功上传');
+                    }else{
+                        layer.msg("文件上传失败", { icon: 5 });
+                    }
+                  }
+                });
+
+                //监听提交
+                form.on('submit(add)',
+                    function (data) {
+                        console.log(data.field);
+                        var _submitFlag=true;
+                        if(!(data.field.taskFile && data.field.taskFile.length>0)){
+                            layer.msg("请选择上传文件", { icon: 5 });
+                            _submitFlag = false;
+                        }
+                        if(_submitFlag){
+                            var loadLay;
+                            $.ajax({
+                                type: "POST",
+                                url: "./parse_xls",
+                                data:data.field,
+                                dataType:'json',
+                                beforeSend: function(){
+                                    loadLay=layer.load(1, {shade: [0.1,'#fff'] });
+                                },
+                                success:function (data) {
+                                    if (data.code == 0) {
+                                        layui.layer.alert("导入专家管理成功", { icon: 6 });
+                                        setTimeout(function(){ window.location.reload(true);},1500);
+                                    } else {
+                                        layer.alert("导入专家管理失败<br/>"+data.msg, { icon: 2 });
+                                    }
+                                },
+                                error:function (data) {
+                                    layer.alert("提交失败<br/>"+JSON.stringify(data), { icon: 2 });
+                                },
+                                complete: function(){
+                                    if(loadLay){
+                                        layer.close(loadLay);
+                                        loadLay=undefined;
+                                    }
+                                }
+                            });
+                        }
+
+                        return false;
+                    });
+
+            });</script>
+
+    </body>
+
+</html>
