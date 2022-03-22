@@ -78,7 +78,7 @@ public class ReviewBatchServiceImpl extends BaseServiceImpl<ReviewBatch, Integer
 
     private ReviewBatchExample.Criteria getBaseExample(ReviewBatchExample example, ReviewBatch model) {
         ReviewBatchExample.Criteria criteria = example.createCriteria();
-        example.setOrderByClause("sort_ desc,id desc");
+        example.setOrderByClause("create_time desc,sort_ desc,id desc");
         criteria.andIsDelEqualTo(0);
         if (model.getStatus() != null) {
             criteria.andStatusEqualTo(model.getStatus());

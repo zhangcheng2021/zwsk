@@ -328,7 +328,8 @@
     a.is_del, a.sort_, a.create_time, a.remark_
     from review_specialist a
     left join spec_info b on a.spec_id = b.id
-    left join review_group c on a.group_id = c.id
-    where a.is_del = 0 order by a.sort_ desc,a.id desc
+    INNER join review_group c on a.group_id = c.id
+    INNER JOIN review_batch rb on c.batch_id=rb.id
+    where a.is_del = 0  and  ( rb.is_del = 0 and rb.status_ = 1 )  order by a.sort_ desc,a.id desc
   </select>
 </mapper>

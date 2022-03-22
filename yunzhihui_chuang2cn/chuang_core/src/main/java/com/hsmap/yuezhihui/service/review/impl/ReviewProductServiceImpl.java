@@ -110,4 +110,8 @@ public class ReviewProductServiceImpl extends BaseServiceImpl<ReviewProduct, Int
     public int updateByGroupAndProduct(ReviewProduct product) {
         return ReviewProductMapper.updateByGroupAndProduct(product);
     }
+
+    public  List<ReviewProduct> findUnderReviewProductList(){
+        return  ReviewProductMapper.findUnderReviewProductList();
+    }
 }

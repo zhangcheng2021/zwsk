@@ -22,6 +22,8 @@ public interface IReviewProductService extends IBaseService<ReviewProduct,Intege
 
     List<ReviewProduct> findByAll();
 
+    List<ReviewProduct> findUnderReviewProductList();
+
     List<ReviewProduct> findByGroupId(int id);
 
 

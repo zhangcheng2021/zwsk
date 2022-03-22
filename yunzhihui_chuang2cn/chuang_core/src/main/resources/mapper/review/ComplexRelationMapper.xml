@@ -455,7 +455,7 @@
             from review_record rr
             left join spec_info si on rr.spce_id = si.id
             where rr.project_id = #{productId} and rr.spce_id = #{specId}
-            order by si.level_ desc , si.user_name asc
+            order by rr.create_time desc,si.level_ desc , si.user_name asc limit 1
         ]]>
     </select>
 

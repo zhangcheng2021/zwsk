@@ -76,7 +76,9 @@ public class ReviewController extends ApiBaseController {
      */
     @RequestMapping(value = _MODEL_NAME + "/productList")
     public String reviewProductList() {
-        List<ReviewProduct> list = reviewProductService.findByAll();
+//        List<ReviewProduct> list = reviewProductService.findByAll();
+        //改成正在评审的groupid下的product
+        List<ReviewProduct> list = reviewProductService.findUnderReviewProductList();
         //map.put("isStatus",dictService.getValueByCode(_APP_IS_REVIEW));
         return setResult(ReviewProductVO.list2vo(list));
     }

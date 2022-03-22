@@ -63,6 +63,16 @@ public class ProductInfoVO {
     private String duration;
     private String groupSort;
 
+    private String remark;
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
     public String getDuration() {
         return duration;
     }

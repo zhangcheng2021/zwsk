@@ -102,6 +102,19 @@
       limit ${(pageNumber-1)*pageSize},${pageSize}
     </if>
   </select>
+  <select id="findUnderReviewProductList" parameterType="com.hsmap.yuezhihui.entity.review.ReviewProductExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from review_product
+    WHERE ( is_del = 0 )
+    and group_id in (select c.id from review_group c ,review_batch rb where c.batch_id=rb.id and rb.is_del = 0 and rb.status_ = 1 )
+    order by sort_ desc,id desc
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

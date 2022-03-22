@@ -5,6 +5,8 @@ import com.hsmap.yuezhihui.entity.review.ReviewProduct;
 import com.hsmap.yuezhihui.entity.review.ReviewProductExample;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ReviewProductMapper extends BaseMapper<ReviewProduct,Integer, ReviewProductExample> {
     /**
@@ -14,4 +16,6 @@ public interface ReviewProductMapper extends BaseMapper<ReviewProduct,Integer, R
      * @return
      */
     int updateByGroupAndProduct(ReviewProduct product);
+
+    List<ReviewProduct> findUnderReviewProductList();
 }
